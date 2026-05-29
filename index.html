@@ -37,11 +37,11 @@ body{background:#f5f0e8;color:#2a1f0e;font-family:'EB Garamond',Georgia,serif;mi
 <body>
 <div class="page">
   <div class="header">
-    <img src="logo.png" id="logo" class="logo-img" alt="Logo La Cabaña">
+    <img id="logo" class="logo-img" alt="Logo La Cabaña">
     <div class="restaurant-type">Mesón · Restaurante &nbsp;·&nbsp; Salón de Celebraciones</div>
   </div>
   <div id="carta-container"><div class="loading">Cargando carta...</div></div>
-  <div class="bread-bar">* Cesta de pan &nbsp;&nbsp; 1,50 €</div>
+  <div class="bread-bar">* Pan &nbsp;&nbsp; 0,50 € por persona</div>
 </div>
 
 <script type="module">
@@ -51,21 +51,18 @@ const SUPABASE_URL = 'https://ycevaztpxjfnbwjmojhx.supabase.co'
 const SUPABASE_KEY = 'sb_publishable_qVRqDvEojdSXXFogpx6iHA_oDn1L0R1'
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
-const SALSAS_ALTAS = {
-  'Entrantes y Primeros': true,
-  'Pescados': true,
-  'Carnes': true
+const SALSAS = {
+  'Carnes':     { texto: '* Pimienta · * Roquefort · * Ajo tostado · * Salsa verde · * Mojo picón', precio: '2,00' },
+  'Bocadillos': { texto: '* Pimienta · * Roquefort · * Ajo tostado · * Salsa verde', precio: '0,50' }
 }
-const SALSAS_TEXTO_ALTA = '* Pimienta · * Roquefort · * Ajo tostado · * Salsa verde · * Mojo picón'
-const SALSAS_TEXTO_BAJA = '* Pimienta · * Roquefort · * Ajo tostado · * Salsa verde'
 
 function salsasHTML(seccion) {
-  const alta = SALSAS_ALTAS[seccion]
-  if (seccion === 'Postres') return ''
+  const s = SALSAS[seccion]
+  if (!s) return ''
   return `<div class="salsas-block">
     <div class="salsas-label">Salsas</div>
-    <div class="salsas-list">${alta ? SALSAS_TEXTO_ALTA : SALSAS_TEXTO_BAJA}</div>
-    <div class="salsas-price">${alta ? '2,00' : '0,50'} €</div>
+    <div class="salsas-list">${s.texto}</div>
+    <div class="salsas-price">${s.precio} €</div>
   </div>`
 }
 
@@ -123,7 +120,7 @@ if (stored) {
   const fi = document.createElement('input')
   fi.type = 'file'; fi.accept = 'image/*'; fi.style.display = 'none'
   document.body.appendChild(fi)
-  logoEl.style.cssText = 'cursor: pointer; border-radius: 8px; padding: 8px; width: 200px; height: 70px; object-fit: contain;'
+  logoEl.style.cssText = 'cursor:pointer;border:2px dashed #c9a84c;border-radius:8px;padding:8px;width:180px;height:60px;object-fit:contain'
   logoEl.title = 'Haz clic para cargar el logo'
   logoEl.addEventListener('click', () => fi.click())
   fi.addEventListener('change', e => {
