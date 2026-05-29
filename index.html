@@ -37,7 +37,7 @@ body{background:#f5f0e8;color:#2a1f0e;font-family:'EB Garamond',Georgia,serif;mi
 <body>
 <div class="page">
   <div class="header">
-    <img id="logo" class="logo-img" alt="Logo La Cabaña">
+    <img src="logo.png" id="logo" class="logo-img" alt="Logo La Cabaña">
     <div class="restaurant-type">Mesón · Restaurante &nbsp;·&nbsp; Salón de Celebraciones</div>
   </div>
   <div id="carta-container"><div class="loading">Cargando carta...</div></div>
@@ -120,7 +120,7 @@ if (stored) {
   const fi = document.createElement('input')
   fi.type = 'file'; fi.accept = 'image/*'; fi.style.display = 'none'
   document.body.appendChild(fi)
-  logoEl.style.cssText = 'cursor:pointer;border:2px dashed #c9a84c;border-radius:8px;padding:8px;width:180px;height:60px;object-fit:contain'
+  logoEl.style.cssText = 'cursor: pointer; border-radius: 8px; padding: 8px; width: 200px; height: 70px; object-fit: contain;'
   logoEl.title = 'Haz clic para cargar el logo'
   logoEl.addEventListener('click', () => fi.click())
   fi.addEventListener('change', e => {
