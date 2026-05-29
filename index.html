@@ -123,7 +123,7 @@ if (stored) {
   const fi = document.createElement('input')
   fi.type = 'file'; fi.accept = 'image/*'; fi.style.display = 'none'
   document.body.appendChild(fi)
-  logoEl.style.cssText = 'cursor:pointer;border:2px dashed #c9a84c;border-radius:8px;padding:8px;width:180px;height:60px;object-fit:contain'
+  logoEl.style.cssText = 'cursor: pointer; border-radius: 8px; padding: 8px; width: 200px; height: 70px; object-fit: contain;'
   logoEl.title = 'Haz clic para cargar el logo'
   logoEl.addEventListener('click', () => fi.click())
   fi.addEventListener('change', e => {
