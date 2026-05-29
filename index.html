@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Cabaña - Carta</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#f5f0e8;color:#2a1f0e;font-family:'EB Garamond',Georgia,serif;min-height:100vh}
+.page{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+.header{text-align:center;padding:1.5rem 1rem 1.5rem;border-bottom:2px solid #8b6914;margin-bottom:2rem}
+.header::before,.header::after{content:'';display:block;height:1px;background:#8b6914;margin:0.5rem auto;width:60%}
+.logo-img{width:200px;height:auto;margin-bottom:0.2rem;display:block;margin-left:auto;margin-right:auto}
+.restaurant-type{font-family:'Cinzel',serif;font-size:0.78rem;letter-spacing:0.3em;color:#8b6914;text-transform:uppercase;margin-bottom:0.2rem}
+.section{margin-bottom:2.2rem}
+.section-title{font-family:'Cinzel',serif;font-size:1rem;font-weight:600;color:#8b6914;letter-spacing:0.25em;text-align:center;text-transform:uppercase;margin-bottom:0.8rem;padding-bottom:0.5rem;border-bottom:1px solid #c9a84c;position:relative}
+.section-title::after{content:'';display:block;width:40px;height:2px;background:#8b6914;margin:0.4rem auto 0}
+.menu-item{display:flex;justify-content:space-between;align-items:baseline;padding:0.38rem 0.3rem;border-bottom:1px dotted #c9a84c55;font-size:1.05rem}
+.menu-item:last-child{border-bottom:none}
+.item-name{flex:1;padding-right:1rem;font-style:italic;color:#2a1f0e}
+.item-desc{font-size:0.82rem;color:#6b4f2a;font-style:normal;display:block;margin-top:1px}
+.item-price{font-family:'Cinzel',serif;font-size:0.95rem;font-weight:600;color:#4a2c0a;white-space:nowrap;min-width:52px;text-align:right}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:0 2.5rem}
+@media(max-width:600px){.two-col{grid-template-columns:1fr}}
+.salsas-block{background:#f0e8d0;border:1px solid #c9a84c55;border-radius:6px;padding:0.8rem 1.2rem;margin-top:0.5rem}
+.salsas-label{font-family:'Cinzel',serif;font-size:0.75rem;color:#8b6914;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.3rem}
+.salsas-list{font-style:italic;font-size:1rem;color:#2a1f0e;margin-bottom:0.2rem}
+.salsas-price{font-family:'Cinzel',serif;font-size:0.9rem;color:#4a2c0a;text-align:right}
+.hr{border:none;border-top:1px solid #c9a84c44;margin:1.8rem 0}
+.asterisk{color:#8b6914;margin-right:3px}
+.bread-bar{text-align:right;font-size:0.9rem;font-style:italic;color:#6b4f2a;border-top:1px solid #c9a84c;margin-top:1.5rem;padding-top:0.5rem}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER con logo -->
+  <div class="header">
+    <img id="logo" class="logo-img" alt="Logo La Cabaña">
+    <div class="restaurant-type">Mesón · Restaurante &nbsp;·&nbsp; Salón de Celebraciones</div>
+  </div>
+
+  <!-- ENTRANTES Y PRIMEROS -->
+  <div class="section">
+    <div class="section-title">Entrantes y Primeros</div>
+    <div class="two-col">
+      <div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Jamón ibérico</span><span class="item-price">14,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Lomo ibérico</span><span class="item-price">14,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Queso de oveja</span><span class="item-price">11,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Rulo de cabra y cebolla caramelizada</span><span class="item-price">12,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Croquetas caseras de jamón</span><span class="item-price">10,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Ensalada mixta</span><span class="item-price">6,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Ensalada de ahumados</span><span class="item-price">13,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Ensalada de rulo de cabra</span><span class="item-price">12,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Gazpacho <em style="font-size:0.85em">(en temporada)</em></span><span class="item-price">5,00</span></div>
+      </div>
+      <div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Sopa de pasta</span><span class="item-price">5,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Sopa de ajo</span><span class="item-price">6,50</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Crema de marisco</span><span class="item-price">7,50</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Revuelto de champiñones</span><span class="item-price">9,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Revuelto bacalao y gambas</span><span class="item-price">12,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Huevos rotos con jamón</span><span class="item-price">10,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Sartenada de huevos rotos <em style="font-size:0.82em">(para 2)</em><span class="item-desc">huevos fritos · pimientos · choricitos · carne · patatas</span></span><span class="item-price">18,00</span></div>
+      </div>
+    </div>
+    <div class="salsas-block" style="margin-top:1rem">
+      <div class="salsas-label">Salsas</div>
+      <div class="salsas-list">* Pimienta &nbsp;·&nbsp; * Roquefort &nbsp;·&nbsp; * Ajo tostado &nbsp;·&nbsp; * Salsa verde &nbsp;·&nbsp; * Mojo picón</div>
+      <div class="salsas-price">2,00 €</div>
+    </div>
+  </div>
+
+  <hr class="hr">
+
+  <!-- PESCADOS -->
+  <div class="section">
+    <div class="section-title">Pescados</div>
+    <div class="two-col">
+      <div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Calamares romana</span><span class="item-price">12,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Chipirones fritos o plancha</span><span class="item-price">14,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Sepia plancha</span><span class="item-price">13,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Chocos fritos</span><span class="item-price">12,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Langostinos plancha o ajillo</span><span class="item-price">15,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Pulpo a la gallega</span><span class="item-price">17,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Pulpo a la brasa</span><span class="item-price">20,00</span></div>
+      </div>
+      <div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Bacalao dorado</span><span class="item-price">12,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Bacalao rebozado</span><span class="item-price">14,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Bacalao gratinado con ali oli</span><span class="item-price">15,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Dorada a la espalda</span><span class="item-price">15,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Mero a la plancha</span><span class="item-price">12,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Mero a la marinera</span><span class="item-price">15,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Salmón a la plancha</span><span class="item-price">14,00</span></div>
+      </div>
+    </div>
+    <div class="salsas-block" style="margin-top:1rem">
+      <div class="salsas-label">Salsas</div>
+      <div class="salsas-list">* Pimienta &nbsp;·&nbsp; * Roquefort &nbsp;·&nbsp; * Ajo tostado &nbsp;·&nbsp; * Salsa verde &nbsp;·&nbsp; * Mojo picón</div>
+      <div class="salsas-price">2,00 €</div>
+    </div>
+  </div>
+
+  <hr class="hr">
+
+  <!-- CARNES -->
+  <div class="section">
+    <div class="section-title">Carnes</div>
+    <div class="two-col">
+      <div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Filete de lomo de cerdo</span><span class="item-price">8,50</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Filetes de pechuga de pollo</span><span class="item-price">8,50</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Carne a la brasa o ajillo</span><span class="item-price">12,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Carrilleras al vino tinto</span><span class="item-price">15,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Solomillo de cerdo plancha</span><span class="item-price">13,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Solomillo al rulo de cabra</span><span class="item-price">16,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Secreto ibérico</span><span class="item-price">16,00</span></div>
+      </div>
+      <div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Pluma ibérica</span><span class="item-price">16,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Presa ibérica</span><span class="item-price">16,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Chuletillas de cordero</span><span class="item-price">17,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Entrecot de ternera</span><span class="item-price">18,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Chuletón de ternera <em style="font-size:0.85em">(1 kg)</em></span><span class="item-price">35,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Torreznos</span><span class="item-price">14,00</span></div>
+      </div>
+    </div>
+    <div class="salsas-block" style="margin-top:1rem">
+      <div class="salsas-label">Salsas</div>
+      <div class="salsas-list">* Pimienta &nbsp;·&nbsp; * Roquefort &nbsp;·&nbsp; * Ajo tostado &nbsp;·&nbsp; * Salsa verde &nbsp;·&nbsp; * Mojo picón</div>
+      <div class="salsas-price">2,00 €</div>
+    </div>
+  </div>
+
+  <hr class="hr">
+
+  <!-- BOCADILLOS -->
+  <div class="section">
+    <div class="section-title">Bocadillos</div>
+    <div class="two-col">
+      <div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Jamón ibérico</span><span class="item-price">4,50</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Lomo ibérico</span><span class="item-price">4,50</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Queso de oveja</span><span class="item-price">4,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Tortilla francesa</span><span class="item-price">4,50</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Bacon y queso</span><span class="item-price">4,50</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Calamares</span><span class="item-price">4,50</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Chipirones</span><span class="item-price">5,50</span></div>
+      </div>
+      <div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Lomo a la plancha y tomate</span><span class="item-price">4,50</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Pollo y pimiento</span><span class="item-price">4,50</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Serranito</span><span class="item-price">5,50</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Completo<span class="item-desc">carne · lechuga · tomate · cebolla · pimiento · jamón · queso</span></span><span class="item-price">6,50</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Montado de lomo o pollo</span><span class="item-price">3,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Hamburguesa normal<span class="item-desc">carne · lechuga · tomate · cebolla</span></span><span class="item-price">6,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Hamburguesa completa<span class="item-desc">carne · lechuga · cebolla · tomate · queso · huevo</span></span><span class="item-price">7,50</span></div>
+      </div>
+    </div>
+    <div class="salsas-block" style="margin-top:1rem">
+      <div class="salsas-label">Salsas</div>
+      <div class="salsas-list">* Pimienta &nbsp;·&nbsp; * Roquefort &nbsp;·&nbsp; * Ajo tostado &nbsp;·&nbsp; * Salsa verde</div>
+      <div class="salsas-price">0,50 €</div>
+    </div>
+  </div>
+
+  <hr class="hr">
+
+  <!-- PIZZAS -->
+  <div class="section">
+    <div class="section-title">Pizzas</div>
+    <div class="two-col">
+      <div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Pannini de atún <em style="font-size:0.85em">(medio)</em></span><span class="item-price">3,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Pannini de atún <em style="font-size:0.85em">(entero)</em></span><span class="item-price">5,50</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Pannini de york <em style="font-size:0.85em">(medio)</em></span><span class="item-price">3,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Pannini de york <em style="font-size:0.85em">(entero)</em></span><span class="item-price">5,50</span></div>
+      </div>
+      <div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Pizza familiar de jamón</span><span class="item-price">9,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Pizza familiar carbonara</span><span class="item-price">9,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Pizza familiar barbacoa</span><span class="item-price">9,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Pizza familiar 4 quesos</span><span class="item-price">9,00</span></div>
+      </div>
+    </div>
+    <div class="salsas-block" style="margin-top:1rem">
+      <div class="salsas-label">Salsas</div>
+      <div class="salsas-list">* Pimienta &nbsp;·&nbsp; * Roquefort &nbsp;·&nbsp; * Ajo tostado &nbsp;·&nbsp; * Salsa verde</div>
+      <div class="salsas-price">0,50 €</div>
+    </div>
+  </div>
+
+  <hr class="hr">
+
+  <!-- PATATAS -->
+  <div class="section">
+    <div class="section-title">Patatas</div>
+    <div class="two-col">
+      <div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Patatas fritas</span><span class="item-price">3,50</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Patatas bravas</span><span class="item-price">5,50</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Patatas, bacon, roquefort</span><span class="item-price">9,00</span></div>
+      </div>
+      <div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Patatas roquefort</span><span class="item-price">5,50</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Patatas a la pimienta</span><span class="item-price">5,50</span></div>
+      </div>
+    </div>
+    <div class="salsas-block" style="margin-top:1rem">
+      <div class="salsas-label">Salsas</div>
+      <div class="salsas-list">* Pimienta &nbsp;·&nbsp; * Roquefort &nbsp;·&nbsp; * Ajo tostado &nbsp;·&nbsp; * Salsa verde</div>
+      <div class="salsas-price">0,50 €</div>
+    </div>
+  </div>
+
+  <hr class="hr">
+
+  <!-- POSTRES -->
+  <div class="section">
+    <div class="section-title">Postres</div>
+    <div class="two-col">
+      <div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Flan casero</span><span class="item-price">4,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Natillas</span><span class="item-price">4,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Mousse de chocolate</span><span class="item-price">4,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Mousse de limón</span><span class="item-price">4,00</span></div>
+      </div>
+      <div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Serradura</span><span class="item-price">4,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Baba de camello</span><span class="item-price">4,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Tartas <em style="font-size:0.85em">(preguntar sabores)</em></span><span class="item-price">4,00</span></div>
+        <div class="menu-item"><span class="item-name"><span class="asterisk">*</span>Helados <em style="font-size:0.85em">(preguntar sabor)</em></span><span class="item-price"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cesta de pan -->
+  <div class="bread-bar">* Cesta de pan &nbsp;&nbsp; 1,50 €</div>
+
+</div>
+
+<script>
+const img = document.getElementById('logo');
+const fileInput = document.createElement('input');
+fileInput.type = 'file';
+fileInput.accept = 'image/*';
+fileInput.style.display = 'none';
+document.body.appendChild(fileInput);
+
+const stored = sessionStorage.getItem('lacabana_logo');
+if (stored) {
+  img.src = stored;
+} else {
+  img.style.cursor = 'pointer';
+  img.title = 'Haz clic para cargar el logo';
+  img.style.border = '2px dashed #c9a84c';
+  img.style.borderRadius = '8px';
+  img.style.padding = '8px';
+  img.style.width = '180px';
+  img.style.height = '60px';
+  img.style.objectFit = 'contain';
+  img.alt = '[ Haz clic para cargar el logo ]';
+  img.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      img.src = ev.target.result;
+      img.style.border = 'none';
+      img.style.padding = '0';
+      img.style.width = '200px';
+      img.style.height = 'auto';
+      sessionStorage.setItem('lacabana_logo', ev.target.result);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+</script>
+</body>
+</html>
