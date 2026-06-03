@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eventos - La Cabaña</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#f5f0e8;color:#2a1f0e;font-family:'EB Garamond',Georgia,serif;font-size:15px}
+/* LAYOUT */
+.app{display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:#4a2c0a;color:#f5f0e8;display:flex;align-items:center;justify-content:space-between;padding:0.6rem 1.2rem;gap:1rem}
+.topbar-title{font-family:'Cinzel',serif;font-size:1rem;letter-spacing:0.1em}
+.topbar-sub{font-family:'Cinzel',serif;font-size:0.65rem;color:#c9a84c;letter-spacing:0.2em;text-transform:uppercase}
+.btn-new{font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.1em;background:#8b6914;color:#f5f0e8;border:none;padding:0.45rem 1rem;border-radius:6px;cursor:pointer}
+.btn-new:hover{background:#c9a84c;color:#2a1f0e}
+.main{display:flex;flex:1;gap:0;overflow:hidden}
+/* SIDEBAR CALENDAR */
+.sidebar{width:300px;min-width:280px;background:#fff;border-right:1px solid #c9a84c44;display:flex;flex-direction:column;overflow-y:auto}
+.cal-header{display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1rem;border-bottom:1px solid #c9a84c44}
+.cal-title{font-family:'Cinzel',serif;font-size:0.85rem;color:#4a2c0a;letter-spacing:0.1em}
+.cal-nav{background:none;border:none;color:#8b6914;cursor:pointer;font-size:1.1rem;padding:0 0.3rem}
+.cal-grid{padding:0.5rem 0.8rem 0.8rem}
+.cal-days-header{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px}
+.cal-day-name{font-family:'Cinzel',serif;font-size:0.6rem;color:#8b6914;text-align:center;letter-spacing:0.05em;padding:3px 0}
+.cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-day{min-height:34px;border-radius:5px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:3px 2px;cursor:default;position:relative;font-size:0.82rem}
+.cal-day.other-month{color:#ccc}
+.cal-day.today{background:#f0e8d0;font-weight:600}
+.cal-day.has-event{cursor:pointer;background:#fdf6e3;border:1px solid #c9a84c88}
+.cal-day.has-event:hover{background:#f0e8d0}
+.cal-day.selected{background:#4a2c0a!important;color:#f5f0e8!important}
+.cal-day.selected .event-dot{background:#c9a84c!important}
+.event-dot{width:5px;height:5px;border-radius:50%;background:#8b6914;margin-top:2px}
+.event-list{padding:0.5rem 0.8rem;border-top:1px solid #c9a84c22}
+.event-list-title{font-family:'Cinzel',serif;font-size:0.68rem;color:#8b6914;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.5rem}
+.event-item{padding:0.45rem 0.6rem;border-radius:6px;cursor:pointer;margin-bottom:4px;border:1px solid #c9a84c44;background:#faf7f0}
+.event-item:hover{background:#f0e8d0}
+.event-item.active{background:#4a2c0a;color:#f5f0e8;border-color:#4a2c0a}
+.event-item.active .ev-sub{color:#c9a84c}
+.ev-name{font-size:0.88rem;font-weight:500}
+.ev-sub{font-size:0.75rem;color:#8b6914;font-style:italic}
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:1.5rem}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#8b6914;gap:1rem;opacity:0.7}
+.empty-icon{font-size:3rem}
+.empty-text{font-family:'Cinzel',serif;font-size:0.8rem;letter-spacing:0.2em}
+/* TABS */
+.tabs{display:flex;gap:2px;margin-bottom:1.2rem;flex-wrap:wrap;border-bottom:2px solid #c9a84c44;padding-bottom:0}
+.tab{font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:0.1em;color:#8b6914;background:none;border:none;padding:0.5rem 0.9rem;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;text-transform:uppercase}
+.tab:hover{color:#4a2c0a}
+.tab.active{color:#4a2c0a;border-bottom-color:#8b6914;font-weight:600}
+.tab-content{display:none}.tab-content.active{display:block}
+/* CARDS */
+.card{background:#fff;border:1px solid #c9a84c44;border-radius:10px;padding:1.2rem 1.5rem;margin-bottom:1rem}
+.card-title{font-family:'Cinzel',serif;font-size:0.78rem;color:#8b6914;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid #c9a84c33}
+/* FORM GRID */
+.fg{display:grid;gap:0.8rem}
+.fg-2{grid-template-columns:1fr 1fr}
+.fg-3{grid-template-columns:1fr 1fr 1fr}
+.fg-4{grid-template-columns:1fr 1fr 1fr 1fr}
+@media(max-width:700px){.fg-2,.fg-3,.fg-4{grid-template-columns:1fr 1fr}}
+.field label{display:block;font-size:0.78rem;color:#6b4f2a;font-style:italic;margin-bottom:0.3rem}
+.field input,.field select,.field textarea{width:100%;padding:0.45rem 0.65rem;border:1px solid #c9a84c88;border-radius:6px;font-size:0.95rem;font-family:inherit;background:#faf7f0;color:#2a1f0e;outline:none}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#8b6914}
+.field textarea{resize:vertical;min-height:70px}
+/* MENU SECTIONS */
+.menu-section{margin-bottom:1rem}
+.menu-section-title{font-family:'Cinzel',serif;font-size:0.72rem;color:#8b6914;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.5rem}
+.menu-tags{display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.5rem}
+.menu-tag{font-size:0.82rem;font-style:italic;background:#f0e8d0;border:1px solid #c9a84c66;border-radius:4px;padding:0.2rem 0.5rem;display:flex;align-items:center;gap:0.3rem}
+.menu-tag .rm{cursor:pointer;color:#a32d2d;font-style:normal;font-size:0.75rem}
+.menu-tag .rm:hover{color:#791f1f}
+.add-item-row{display:flex;gap:0.4rem}
+.add-item-row input,.add-item-row select{flex:1;padding:0.38rem 0.6rem;border:1px solid #c9a84c88;border-radius:6px;font-size:0.88rem;font-family:inherit;background:#faf7f0;color:#2a1f0e;outline:none}
+.add-item-row input:focus,.add-item-row select:focus{border-color:#8b6914}
+.btn-sm{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.08em;padding:0.38rem 0.8rem;border:none;border-radius:6px;cursor:pointer}
+.btn-primary{background:#4a2c0a;color:#f5f0e8}.btn-primary:hover{background:#6b4f2a}
+.btn-secondary{background:#f0e8d0;color:#4a2c0a;border:1px solid #c9a84c}.btn-secondary:hover{background:#e8dcc0}
+.btn-danger{background:#791f1f;color:#f5f0e8}.btn-danger:hover{background:#a32d2d}
+.btn-lg{padding:0.6rem 1.4rem;font-size:0.8rem}
+/* FICHA COCINA */
+.cocina-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.cocina-block{background:#faf7f0;border:1px solid #c9a84c44;border-radius:8px;padding:0.8rem 1rem}
+.cocina-block-title{font-family:'Cinzel',serif;font-size:0.7rem;color:#8b6914;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.6rem;border-bottom:1px dotted #c9a84c55;padding-bottom:0.4rem}
+.cocina-item{font-size:0.9rem;font-style:italic;padding:0.2rem 0;border-bottom:1px dotted #c9a84c22}
+.cocina-item:last-child{border:none}
+.cocina-item .qty{font-family:'Cinzel',serif;font-size:0.75rem;color:#4a2c0a;font-style:normal;margin-left:0.4rem}
+/* CONTRATO */
+.contrato-body{font-size:0.92rem;line-height:1.8;color:#2a1f0e}
+.contrato-body h2{font-family:'Cinzel',serif;font-size:1rem;text-align:center;margin-bottom:1rem;letter-spacing:0.1em}
+.contrato-body .c-section{margin:1rem 0}
+.contrato-body strong{font-family:'Cinzel',serif;font-size:0.8rem}
+.contrato-precios{border:1px solid #c9a84c44;border-radius:8px;padding:0.8rem 1.2rem;margin:1rem 0;background:#faf7f0}
+.c-row{display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px dotted #c9a84c33;font-size:0.9rem}
+.c-row:last-child{border:none;font-weight:600;font-family:'Cinzel',serif;font-size:0.85rem}
+.c-firmas{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2rem}
+.c-firma{text-align:center;border-top:1px solid #2a1f0e;padding-top:0.5rem;font-size:0.85rem}
+/* FACTURA */
+.factura-header{display:flex;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem}
+.factura-from{font-size:0.88rem;line-height:1.7}
+.factura-from strong{font-family:'Cinzel',serif;font-size:0.85rem;display:block;margin-bottom:0.3rem}
+.factura-num{text-align:right;font-family:'Cinzel',serif;font-size:0.8rem;color:#8b6914;letter-spacing:0.1em}
+.factura-table{width:100%;border-collapse:collapse;margin-bottom:1rem;font-size:0.9rem}
+.factura-table th{font-family:'Cinzel',serif;font-size:0.65rem;color:#8b6914;letter-spacing:0.15em;text-transform:uppercase;padding:0.5rem 0.6rem;border-bottom:1px solid #c9a84c;text-align:left}
+.factura-table td{padding:0.45rem 0.6rem;border-bottom:1px dotted #c9a84c33;vertical-align:middle}
+.factura-table tr:last-child td{border:none}
+.factura-totals{display:flex;flex-direction:column;align-items:flex-end;gap:0.3rem;font-size:0.9rem}
+.factura-total-row{display:flex;gap:2rem;justify-content:flex-end}
+.factura-total-row.grand{font-family:'Cinzel',serif;font-size:1rem;color:#4a2c0a;border-top:2px solid #8b6914;padding-top:0.4rem;margin-top:0.2rem}
+.factura-total-label{min-width:160px;text-align:right;font-style:italic}
+.factura-total-val{min-width:90px;text-align:right;font-weight:600}
+/* MATERIAS PRIMAS */
+.mp-table{width:100%;border-collapse:collapse;font-size:0.9rem}
+.mp-table th{font-family:'Cinzel',serif;font-size:0.65rem;color:#8b6914;letter-spacing:0.15em;text-transform:uppercase;padding:0.5rem 0.6rem;border-bottom:1px solid #c9a84c;text-align:left}
+.mp-table td{padding:0.4rem 0.6rem;border-bottom:1px dotted #c9a84c33}
+.mp-table tr:hover td{background:#faf7f0}
+.mp-cat{font-family:'Cinzel',serif;font-size:0.7rem;color:#8b6914;letter-spacing:0.1em;text-transform:uppercase}
+/* PRINT */
+.print-btn{float:right;margin-top:-0.2rem}
+@media print{.topbar,.sidebar,.tabs,.btn-sm,.btn-lg,.print-btn{display:none!important}.content{padding:0}.card{border:none;padding:0.5rem 0}}
+/* TOAST */
+#toast{position:fixed;bottom:1.2rem;right:1.2rem;background:#4a2c0a;color:#f5f0e8;font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.1em;padding:0.6rem 1.2rem;border-radius:8px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:9999}
+#toast.show{opacity:1}
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:#0005;display:flex;align-items:center;justify-content:center;z-index:1000;display:none}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:12px;padding:2rem;width:90%;max-width:500px;border:1px solid #c9a84c}
+.modal-title{font-family:'Cinzel',serif;font-size:0.9rem;color:#4a2c0a;margin-bottom:1.2rem;letter-spacing:0.1em}
+.modal-actions{display:flex;gap:0.6rem;justify-content:flex-end;margin-top:1.2rem}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div><div class="topbar-title">La Cabaña</div><div class="topbar-sub">Gestión de Eventos</div></div>
+    <button class="btn-new" id="btn-nuevo-evento">+ Nuevo Evento</button>
+  </div>
+  <div class="main">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="cal-header">
+        <button class="cal-nav" id="cal-prev">&#8249;</button>
+        <div class="cal-title" id="cal-title"></div>
+        <button class="cal-nav" id="cal-next">&#8250;</button>
+      </div>
+      <div class="cal-grid">
+        <div class="cal-days-header" id="cal-days-header"></div>
+        <div class="cal-days" id="cal-days"></div>
+      </div>
+      <div class="event-list">
+        <div class="event-list-title">Eventos del mes</div>
+        <div id="event-list-items"></div>
+      </div>
+    </div>
+    <!-- CONTENT -->
+    <div class="content" id="main-content">
+      <div class="empty-state">
+        <div class="empty-icon">🍽️</div>
+        <div class="empty-text">Selecciona o crea un evento</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NUEVO EVENTO -->
+<div class="modal-bg" id="modal-nuevo">
+  <div class="modal">
+    <div class="modal-title">Nuevo Evento</div>
+    <div class="fg fg-2" style="gap:0.8rem">
+      <div class="field"><label>Nombre y Apellidos</label><input id="mn-nombre" placeholder="Nombre del cliente"></div>
+      <div class="field"><label>Teléfono</label><input id="mn-tlf" placeholder="Teléfono"></div>
+      <div class="field"><label>Tipo de Evento</label>
+        <select id="mn-evento">
+          <option>Comunión</option><option>Boda</option><option>Bautizo</option>
+          <option>Cumpleaños</option><option>Aniversario</option><option>Otro</option>
+        </select>
+      </div>
+      <div class="field"><label>Nombre del Evento</label><input id="mn-evento-nombre" placeholder="Ej: Comunión Erik"></div>
+      <div class="field"><label>Fecha</label><input type="date" id="mn-fecha"></div>
+      <div class="field"><label>Hora</label><input type="time" id="mn-hora" value="14:00"></div>
+      <div class="field"><label>Nº Comensales</label><input type="number" id="mn-adultos" placeholder="0" min="0"></div>
+      <div class="field"><label>Nº Niños</label><input type="number" id="mn-ninos" placeholder="0" min="0"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-sm btn-secondary" id="btn-modal-cancel">Cancelar</button>
+      <button class="btn-sm btn-primary" id="btn-modal-save">Crear Evento</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+const sb = createClient('https://ycevaztpxjfnbwjmojhx.supabase.co','sb_publishable_qVRqDvEojdSXXFogpx6iHA_oDn1L0R1')
+
+// ── STATE ──
+let eventos = []
+let cartaItems = []
+let currentEvento = null
+let calYear, calMonth
+const now = new Date()
+calYear = now.getFullYear(); calMonth = now.getMonth()
+
+// ── TOAST ──
+function toast(msg, err=false) {
+  const t = document.getElementById('toast')
+  t.textContent = msg; t.className = 'show' + (err?' err':'')
+  clearTimeout(t._t); t._t = setTimeout(()=>t.className='', 2600)
+}
+
+// ── LOAD ──
+async function loadAll() {
+  const [ev, carta] = await Promise.all([
+    sb.from('eventos').select('*').order('fecha'),
+    sb.from('carta').select('*').order('seccion,nombre')
+  ])
+  if (ev.data) eventos = ev.data
+  if (carta.data) cartaItems = carta.data
+  renderCal(); renderEventList()
+}
+
+// ── CALENDAR ──
+const DAYS = ['L','M','X','J','V','S','D']
+const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
+
+function renderCal() {
+  document.getElementById('cal-title').textContent = MONTHS[calMonth] + ' ' + calYear
+  const hdr = document.getElementById('cal-days-header')
+  hdr.innerHTML = DAYS.map(d=>`<div class="cal-day-name">${d}</div>`).join('')
+  const first = new Date(calYear, calMonth, 1)
+  let startDow = first.getDay(); if(startDow===0) startDow=7
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate()
+  const daysInPrev = new Date(calYear, calMonth, 0).getDate()
+  const todayStr = now.toISOString().slice(0,10)
+  const eventDays = new Set(eventos.filter(e=>e.fecha&&e.fecha.slice(0,7)===`${calYear}-${String(calMonth+1).padStart(2,'0')}`).map(e=>e.fecha.slice(8,10).replace(/^0/,'')))
+  let html = ''
+  for(let i=1;i<startDow;i++) html+=`<div class="cal-day other-month">${daysInPrev-startDow+1+i}</div>`
+  for(let d=1;d<=daysInMonth;d++){
+    const ds=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`
+    const isToday=ds===todayStr, hasEv=eventDays.has(String(d))
+    const isSel=currentEvento&&currentEvento.fecha===ds
+    html+=`<div class="cal-day${isToday?' today':''}${hasEv?' has-event':''}${isSel?' selected':''}" data-date="${ds}">${d}${hasEv?'<div class="event-dot"></div>':''}</div>`
+  }
+  document.getElementById('cal-days').innerHTML = html
+  document.querySelectorAll('.cal-day.has-event').forEach(el=>{
+    el.addEventListener('click',()=>{
+      const evs = eventos.filter(e=>e.fecha===el.dataset.date)
+      if(evs.length===1) selectEvento(evs[0])
+    })
+  })
+}
+
+function renderEventList(filter=null) {
+  const list = filter ? eventos.filter(e=>e.fecha&&e.fecha.startsWith(`${calYear}-${String(calMonth+1).padStart(2,'0')}`)) : eventos.filter(e=>e.fecha&&e.fecha.startsWith(`${calYear}-${String(calMonth+1).padStart(2,'0')}`))
+  const el = document.getElementById('event-list-items')
+  if(!list.length){el.innerHTML='<div style="font-size:0.82rem;color:#aaa;font-style:italic;padding:0.3rem 0">Sin eventos este mes</div>';return}
+  el.innerHTML = list.map(e=>`
+    <div class="event-item${currentEvento&&currentEvento.id===e.id?' active':''}" data-id="${e.id}">
+      <div class="ev-name">${e.evento_nombre||e.tipo_evento||'Evento'}</div>
+      <div class="ev-sub">${e.nombre_cliente||''} · ${e.fecha||''}</div>
+    </div>`).join('')
+  el.querySelectorAll('.event-item').forEach(el2=>{
+    el2.addEventListener('click',()=>{
+      const ev=eventos.find(e=>e.id==el2.dataset.id)
+      if(ev) selectEvento(ev)
+    })
+  })
+}
+
+document.getElementById('cal-prev').onclick=()=>{calMonth--;if(calMonth<0){calMonth=11;calYear--}renderCal();renderEventList()}
+document.getElementById('cal-next').onclick=()=>{calMonth++;if(calMonth>11){calMonth=0;calYear++}renderCal();renderEventList()}
+
+// ── SELECT EVENTO ──
+function selectEvento(ev) {
+  currentEvento = ev
+  renderCal(); renderEventList()
+  renderEventoDetail(ev)
+}
+
+// ── DETAIL ──
+const TABS = [
+  {id:'ficha',label:'Ficha Cliente'},
+  {id:'menu',label:'Menú'},
+  {id:'cocina',label:'Ficha Cocina'},
+  {id:'reserva',label:'Reserva'},
+  {id:'contrato',label:'Contrato'},
+  {id:'factura',label:'Factura'},
+  {id:'materias',label:'Materias Primas'},
+]
+
+let activeTab = 'ficha'
+
+function renderEventoDetail(ev) {
+  const mc = document.getElementById('main-content')
+  mc.innerHTML = `
+    <div class="tabs" id="tabs-bar">
+      ${TABS.map(t=>`<button class="tab${activeTab===t.id?' active':''}" data-tab="${t.id}">${t.label}</button>`).join('')}
+    </div>
+    <div id="tab-body"></div>`
+  document.querySelectorAll('.tab').forEach(btn=>{
+    btn.addEventListener('click',()=>{activeTab=btn.dataset.tab;renderTabContent(ev)})
+  })
+  renderTabContent(ev)
+}
+
+function renderTabContent(ev) {
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===activeTab))
+  const body = document.getElementById('tab-body')
+  switch(activeTab) {
+    case 'ficha': body.innerHTML = tabFicha(ev); bindFicha(ev); break
+    case 'menu': body.innerHTML = tabMenu(ev); bindMenu(ev); break
+    case 'cocina': body.innerHTML = tabCocina(ev); break
+    case 'reserva': body.innerHTML = tabReserva(ev); break
+    case 'contrato': body.innerHTML = tabContrato(ev); break
+    case 'factura': body.innerHTML = tabFactura(ev); bindFactura(ev); break
+    case 'materias': body.innerHTML = tabMaterias(ev); break
+  }
+}
+
+// ── TAB FICHA ──
+function tabFicha(ev) {
+  const m = ev.menu||{}
+  return `<div class="card">
+    <div class="card-title">Datos del Cliente</div>
+    <div class="fg fg-2" style="gap:0.8rem">
+      <div class="field"><label>Nombre y Apellidos</label><input id="f-nombre" value="${ev.nombre_cliente||''}"></div>
+      <div class="field"><label>DNI</label><input id="f-dni" value="${ev.dni||''}"></div>
+      <div class="field"><label>Dirección</label><input id="f-dir" value="${ev.direccion||''}"></div>
+      <div class="field"><label>Teléfono</label><input id="f-tlf" value="${ev.telefono||''}"></div>
+      <div class="field"><label>Salón / Servicio</label>
+        <select id="f-salon">
+          ${['Salón Principal','Salón Gargo','Catering','Terraza'].map(s=>`<option${ev.salon===s?' selected':''}>${s}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field"><label>Tipo de Evento</label>
+        <select id="f-tipo">
+          ${['Comunión','Boda','Bautizo','Cumpleaños','Aniversario','Otro'].map(s=>`<option${ev.tipo_evento===s?' selected':''}>${s}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field"><label>Nombre del Evento</label><input id="f-evnombre" value="${ev.evento_nombre||''}"></div>
+      <div class="field"><label>Fecha</label><input type="date" id="f-fecha" value="${ev.fecha||''}"></div>
+      <div class="field"><label>Hora</label><input type="time" id="f-hora" value="${ev.hora||'14:00'}"></div>
+      <div class="field"><label>Nº Comensales Adultos</label><input type="number" id="f-adultos" value="${ev.num_adultos||0}" min="0"></div>
+      <div class="field"><label>Nº Niños</label><input type="number" id="f-ninos" value="${ev.num_ninos||0}" min="0"></div>
+      <div class="field"><label>Señal Precontrato (€)</label><input type="number" id="f-senal" value="${ev.senal||0}" min="0" step="0.01"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Observaciones</div>
+    <div class="field"><textarea id="f-obs" rows="3">${ev.observaciones||''}</textarea></div>
+  </div>
+  <div style="display:flex;gap:0.6rem;justify-content:flex-end">
+    <button class="btn-sm btn-danger btn-lg" id="btn-del-evento">Eliminar Evento</button>
+    <button class="btn-sm btn-primary btn-lg" id="btn-save-ficha">Guardar</button>
+  </div>`
+}
+
+function bindFicha(ev) {
+  document.getElementById('btn-save-ficha').onclick = async () => {
+    const upd = {
+      nombre_cliente: document.getElementById('f-nombre').value,
+      dni: document.getElementById('f-dni').value,
+      direccion: document.getElementById('f-dir').value,
+      telefono: document.getElementById('f-tlf').value,
+      salon: document.getElementById('f-salon').value,
+      tipo_evento: document.getElementById('f-tipo').value,
+      evento_nombre: document.getElementById('f-evnombre').value,
+      fecha: document.getElementById('f-fecha').value,
+      hora: document.getElementById('f-hora').value,
+      num_adultos: parseInt(document.getElementById('f-adultos').value)||0,
+      num_ninos: parseInt(document.getElementById('f-ninos').value)||0,
+      senal: parseFloat(document.getElementById('f-senal').value)||0,
+      observaciones: document.getElementById('f-obs').value,
+    }
+    const {error} = await sb.from('eventos').update(upd).eq('id',ev.id)
+    if(error){toast('Error al guardar',true);return}
+    Object.assign(ev, upd)
+    const idx=eventos.findIndex(e=>e.id===ev.id); if(idx>-1) Object.assign(eventos[idx],upd)
+    renderCal(); renderEventList(); toast('Ficha guardada')
+  }
+  document.getElementById('btn-del-evento').onclick = async () => {
+    if(!confirm('¿Eliminar este evento permanentemente?')) return
+    await sb.from('eventos').delete().eq('id',ev.id)
+    eventos = eventos.filter(e=>e.id!==ev.id)
+    currentEvento = null
+    document.getElementById('main-content').innerHTML=`<div class="empty-state"><div class="empty-icon">🍽️</div><div class="empty-text">Selecciona o crea un evento</div></div>`
+    renderCal(); renderEventList(); toast('Evento eliminado')
+  }
+}
+
+// ── TAB MENU ──
+function getMenu(ev) { return ev.menu_data ? (typeof ev.menu_data==='string'?JSON.parse(ev.menu_data):ev.menu_data) : {} }
+
+const MENU_SECTIONS = [
+  {key:'entrantes_ind',label:'Entrantes Individuales'},
+  {key:'relleno_mesa',label:'Relleno de Mesa'},
+  {key:'primer_plato',label:'Primer Plato'},
+  {key:'segundo_plato',label:'Segundo Plato'},
+  {key:'sorbetes',label:'Sorbetes'},
+  {key:'tercer_plato',label:'Tercer Plato'},
+  {key:'postre',label:'Postre'},
+  {key:'bebidas',label:'Bebidas'},
+  {key:'barra',label:'Barra'},
+]
+const MENU_NINOS_SECTIONS = [
+  {key:'ninos_entrantes',label:'Entrantes Niños'},
+  {key:'ninos_plato',label:'Plato Niños'},
+]
+
+function tabMenu(ev) {
+  const m = getMenu(ev)
+  const cartaOpts = cartaItems.map(i=>`<option value="${i.nombre}">${i.nombre}</option>`).join('')
+  const allSecs = [...MENU_SECTIONS, ...MENU_NINOS_SECTIONS]
+  let html = `<div class="card"><div class="card-title">Menú Adultos</div>`
+  for(const s of MENU_SECTIONS) {
+    const items = m[s.key]||[]
+    html+=`<div class="menu-section">
+      <div class="menu-section-title">${s.label}</div>
+      <div class="menu-tags" id="tags-${s.key}">${items.map(it=>`<span class="menu-tag">${it}<span class="rm" data-sec="${s.key}" data-val="${it}">✕</span></span>`).join('')}</div>
+      <div class="add-item-row">
+        <select class="menu-carta-sel" data-sec="${s.key}"><option value="">— De la carta —</option>${cartaOpts}</select>
+        <input class="menu-free-inp" data-sec="${s.key}" placeholder="O escribe libremente...">
+        <button class="btn-sm btn-primary menu-add-btn" data-sec="${s.key}">+</button>
+      </div>
+    </div>`
+  }
+  html+=`</div><div class="card"><div class="card-title">Menú de Niños</div>`
+  for(const s of MENU_NINOS_SECTIONS) {
+    const items = m[s.key]||[]
+    html+=`<div class="menu-section">
+      <div class="menu-section-title">${s.label}</div>
+      <div class="menu-tags" id="tags-${s.key}">${items.map(it=>`<span class="menu-tag">${it}<span class="rm" data-sec="${s.key}" data-val="${it}">✕</span></span>`).join('')}</div>
+      <div class="add-item-row">
+        <select class="menu-carta-sel" data-sec="${s.key}"><option value="">— De la carta —</option>${cartaOpts}</select>
+        <input class="menu-free-inp" data-sec="${s.key}" placeholder="O escribe libremente...">
+        <button class="btn-sm btn-primary menu-add-btn" data-sec="${s.key}">+</button>
+      </div>
+    </div>`
+  }
+  html+=`</div><div style="display:flex;justify-content:flex-end"><button class="btn-sm btn-primary btn-lg" id="btn-save-menu">Guardar Menú</button></div>`
+  return html
+}
+
+function bindMenu(ev) {
+  const m = getMenu(ev)
+  function refreshTags(sec) {
+    const items = m[sec]||[]
+    document.getElementById('tags-'+sec).innerHTML = items.map(it=>`<span class="menu-tag">${it}<span class="rm" data-sec="${sec}" data-val="${it}">✕</span></span>`).join('')
+    bindRemove()
+  }
+  function bindRemove() {
+    document.querySelectorAll('.rm').forEach(el=>{
+      el.onclick=()=>{
+        const {sec,val}=el.dataset
+        m[sec]=(m[sec]||[]).filter(x=>x!==val)
+        refreshTags(sec)
+      }
+    })
+  }
+  bindRemove()
+  document.querySelectorAll('.menu-add-btn').forEach(btn=>{
+    btn.onclick=()=>{
+      const sec=btn.dataset.sec
+      const sel=document.querySelector(`.menu-carta-sel[data-sec="${sec}"]`)
+      const inp=document.querySelector(`.menu-free-inp[data-sec="${sec}"]`)
+      const val=(sel.value||inp.value).trim()
+      if(!val) return
+      if(!m[sec]) m[sec]=[]
+      if(!m[sec].includes(val)) m[sec].push(val)
+      sel.value=''; inp.value=''
+      refreshTags(sec)
+    }
+  })
+  document.getElementById('btn-save-menu').onclick = async () => {
+    const {error} = await sb.from('eventos').update({menu_data: JSON.stringify(m)}).eq('id',ev.id)
+    if(error){toast('Error al guardar',true);return}
+    ev.menu_data = JSON.stringify(m)
+    const idx=eventos.findIndex(e=>e.id===ev.id); if(idx>-1) eventos[idx].menu_data=ev.menu_data
+    toast('Menú guardado')
+  }
+}
+
+// ── TAB COCINA ──
+function tabCocina(ev) {
+  const m = getMenu(ev)
+  const adultos = ev.num_adultos||0, ninos = ev.num_ninos||0
+  const allSecs = [...MENU_SECTIONS,...MENU_NINOS_SECTIONS]
+  let html = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+    <div style="font-family:'Cinzel',serif;font-size:0.75rem;color:#8b6914;letter-spacing:0.15em;text-transform:uppercase">
+      ${ev.evento_nombre||'Evento'} · ${ev.fecha||''} · ${ev.hora||''} · ${adultos} adultos + ${ninos} niños
+    </div>
+    <button class="btn-sm btn-secondary print-btn" onclick="window.print()">🖨 Imprimir</button>
+  </div>
+  <div class="cocina-grid">`
+  for(const s of MENU_SECTIONS) {
+    const items = m[s.key]||[]
+    if(!items.length) continue
+    html+=`<div class="cocina-block">
+      <div class="cocina-block-title">${s.label}</div>
+      ${items.map(it=>`<div class="cocina-item">${it} <span class="qty">× ${adultos}</span></div>`).join('')}
+    </div>`
+  }
+  html+=`</div>`
+  if(ninos>0) {
+    html+=`<div class="card" style="margin-top:1rem"><div class="card-title">Menú Niños (${ninos})</div><div class="cocina-grid">`
+    for(const s of MENU_NINOS_SECTIONS) {
+      const items = m[s.key]||[]
+      if(!items.length) continue
+      html+=`<div class="cocina-block">
+        <div class="cocina-block-title">${s.label}</div>
+        ${items.map(it=>`<div class="cocina-item">${it} <span class="qty">× ${ninos}</span></div>`).join('')}
+      </div>`
+    }
+    html+=`</div></div>`
+  }
+  if(ev.observaciones) html+=`<div class="card"><div class="card-title">Observaciones</div><div style="font-style:italic;line-height:1.7">${ev.observaciones}</div></div>`
+  return html
+}
+
+// ── TAB RESERVA ──
+function tabReserva(ev) {
+  return `<div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div style="font-family:'Cinzel',serif;font-size:1.1rem;color:#4a2c0a;letter-spacing:0.1em">RESERVA SERVICIO EVENTO</div>
+      <button class="btn-sm btn-secondary" onclick="window.print()">🖨 Imprimir</button>
+    </div>
+    <div style="margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:0.8rem 2rem;font-size:0.95rem;line-height:1.9">
+      <div><span style="color:#8b6914;font-style:italic">N. y Apellidos:</span><br><strong>${ev.nombre_cliente||'—'}</strong></div>
+      <div><span style="color:#8b6914;font-style:italic">D.N.I.:</span><br><strong>${ev.dni||'—'}</strong></div>
+      <div><span style="color:#8b6914;font-style:italic">Dirección:</span><br><strong>${ev.direccion||'—'}</strong></div>
+      <div><span style="color:#8b6914;font-style:italic">Tlf.:</span><br><strong>${ev.telefono||'—'}</strong></div>
+      <div><span style="color:#8b6914;font-style:italic">Salones:</span><br><strong>${ev.salon||'—'}</strong></div>
+      <div><span style="color:#8b6914;font-style:italic">Evento:</span><br><strong>${ev.evento_nombre||ev.tipo_evento||'—'}</strong></div>
+      <div><span style="color:#8b6914;font-style:italic">Fecha del Evento:</span><br><strong>${ev.fecha||'—'}</strong></div>
+      <div><span style="color:#8b6914;font-style:italic">Hora:</span><br><strong>${ev.hora||'—'}</strong></div>
+      <div><span style="color:#8b6914;font-style:italic">Nº Comensales:</span><br><strong>${ev.num_adultos||0}</strong></div>
+      <div><span style="color:#8b6914;font-style:italic">Nº de Niños:</span><br><strong>${ev.num_ninos||0}</strong></div>
+      <div><span style="color:#8b6914;font-style:italic">Señal Precontrato:</span><br><strong>${ev.senal||0} €</strong></div>
+    </div>
+  </div>`
+}
+
+// ── TAB CONTRATO ──
+function tabContrato(ev) {
+  const fa = ev.precio_adulto||0, fn = ev.precio_nino||0
+  const ta = (ev.num_adultos||0)*fa, tn = (ev.num_ninos||0)*fn
+  const base = ta+tn, iva = base*0.1, total = base+iva
+  const hoy = new Date().toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'})
+  return `<div class="card">
+    <div style="display:flex;justify-content:flex-end;gap:0.5rem;margin-bottom:0.5rem">
+      <div class="field" style="display:flex;align-items:center;gap:0.5rem">
+        <label style="white-space:nowrap;font-size:0.8rem;color:#6b4f2a;font-style:italic">Precio adulto (€):</label>
+        <input type="number" id="c-pa" value="${ev.precio_adulto||0}" style="width:80px;padding:0.3rem 0.5rem;border:1px solid #c9a84c88;border-radius:5px;font-family:inherit;font-size:0.9rem;background:#faf7f0">
+      </div>
+      <div class="field" style="display:flex;align-items:center;gap:0.5rem">
+        <label style="white-space:nowrap;font-size:0.8rem;color:#6b4f2a;font-style:italic">Precio niño (€):</label>
+        <input type="number" id="c-pn" value="${ev.precio_nino||0}" style="width:80px;padding:0.3rem 0.5rem;border:1px solid #c9a84c88;border-radius:5px;font-family:inherit;font-size:0.9rem;background:#faf7f0">
+      </div>
+      <button class="btn-sm btn-primary" id="btn-save-precios">Guardar precios</button>
+      <button class="btn-sm btn-secondary" onclick="window.print()">🖨 Imprimir</button>
+    </div>
+    <div class="contrato-body">
+      <h2>CONTRATO DEFINITIVO</h2>
+      <div style="text-align:right;font-style:italic;font-size:0.85rem;margin-bottom:1rem">Higuera de Vargas, a ${hoy}</div>
+      <div class="c-section">DICEN:</div>
+      <div class="c-section">
+        D. <strong>${ev.nombre_cliente||'_______________'}</strong>, mayor de edad con D.N.I. <strong>${ev.dni||'___________'}</strong> y domicilio en <strong>${ev.direccion||'_______________'}</strong>, Tlf. <strong>${ev.telefono||'___________'}</strong>, como arrendatario, y de otra parte, D. <strong>Juan Manuel Garcia Martins</strong>, legal de la empresa Mesón-Restaurante <strong>"LA CABAÑA"</strong> con domicilio en HIGUERA DE VARGAS Ctra EX-311, KM 13,700 y con C.I.F. 80073411-S como arrendador.
+      </div>
+      <div class="c-section"><strong>PRIMERO</strong>: que D. JUAN MANUEL GARCIA MARTINS es propietario-gerente de la empresa Mesón-Restaurante "LA CABAÑA", cuyo objeto de comercio consiste en prestar servicios restaurante en sus locales para todo tipo de eventos.</div>
+      <div class="c-section"><strong>SEGUNDO</strong>: que D. JUAN MANUEL GARCIA MARTINS ha convenido y le interesa el arrendamiento de estos servicios de la empresa Mesón-Restaurante "LA CABAÑA", por lo que formalizan su acuerdo mediante el otorgamiento de este contrato.</div>
+      <div class="c-section"><strong>CLAUSULAS:</strong></div>
+      <div class="c-section"><strong>Primera</strong>: La empresa Mesón-Restaurante "LA CABAÑA" cede y arrienda sus servicios y local a D. <strong>${ev.nombre_cliente||'___'}</strong> para la celebración de <strong>${ev.evento_nombre||ev.tipo_evento||'___'}</strong> el día <strong>${ev.fecha||'___'}</strong> a las <strong>${ev.hora||'___'}</strong>.</div>
+      <div class="c-section"><strong>Segunda</strong>: Los servicios de la empresa consistirán en poner a disposición del arrendador el día de la celebración, mesas suficientes para la cantidad de <strong>${(ev.num_adultos||0)+(ev.num_ninos||0)}</strong> comensales y sirviendo con su personal las bebidas y comidas que se determinen.</div>
+      <div class="contrato-precios">
+        <div class="c-row"><span>Nº Comensales: ${ev.num_adultos||0} × ${fa} €</span><span>${ta.toFixed(2)} €</span></div>
+        <div class="c-row"><span>Nº Niños: ${ev.num_ninos||0} × ${fn} €</span><span>${tn.toFixed(2)} €</span></div>
+        <div class="c-row"><span>Base imponible</span><span>${base.toFixed(2)} €</span></div>
+        <div class="c-row"><span>IVA 10%</span><span>${iva.toFixed(2)} €</span></div>
+        <div class="c-row"><span>TOTAL</span><span>${total.toFixed(2)} €</span></div>
+      </div>
+      <div class="c-section"><strong>Tercera</strong>: D. <strong>${ev.nombre_cliente||'___'}</strong> obliga a satisfacer la suma de <strong>${base.toFixed(2)} €</strong>, más el 10% de IVA, hasta el total de <strong>${total.toFixed(2)} €</strong>, previa expedición de la factura al término del evento.</div>
+      <div class="c-section"><strong>Cuarta</strong>: En caso de incumplimiento de contrato el arrendatario perderá las entregas efectuadas como señal y a indemnizar al arrendador con un 10% más del valor total del presupuesto.</div>
+      <div class="c-firmas">
+        <div class="c-firma">El arrendador<br><br><br>Juan Manuel Garcia Martins</div>
+        <div class="c-firma">El arrendatario<br><br><br>${ev.nombre_cliente||'_______________'}</div>
+      </div>
+    </div>
+  </div>`
+}
+
+// ── TAB FACTURA ──
+function getFactura(ev) {
+  if(ev.factura_data) return typeof ev.factura_data==='string'?JSON.parse(ev.factura_data):ev.factura_data
+  const fa=ev.precio_adulto||0,fn=ev.precio_nino||0
+  const lineas=[]
+  if(ev.num_adultos) lineas.push({desc:'Menús Adultos',qty:ev.num_adultos,precio:fa})
+  if(ev.num_ninos) lineas.push({desc:'Menús Niños',qty:ev.num_ninos,precio:fn})
+  return {lineas, num_factura:''}
+}
+
+function tabFactura(ev) {
+  const f = getFactura(ev)
+  const rows = f.lineas.map((l,i)=>`<tr>
+    <td><input class="edit-input" data-fi="${i}" data-fk="qty" type="number" value="${l.qty}" style="width:60px;padding:0.25rem 0.4rem;border:1px solid #c9a84c88;border-radius:4px;font-family:inherit;background:#faf7f0"></td>
+    <td><input class="edit-input" data-fi="${i}" data-fk="desc" value="${l.desc}" style="width:100%;padding:0.25rem 0.4rem;border:1px solid #c9a84c88;border-radius:4px;font-family:inherit;background:#faf7f0"></td>
+    <td><input class="edit-input" data-fi="${i}" data-fk="precio" type="number" step="0.01" value="${l.precio}" style="width:80px;padding:0.25rem 0.4rem;border:1px solid #c9a84c88;border-radius:4px;font-family:inherit;background:#faf7f0;text-align:right"></td>
+    <td style="text-align:right;font-weight:600">${(l.qty*l.precio).toFixed(2)} €</td>
+    <td><button class="btn-sm btn-danger" style="padding:0.2rem 0.5rem;font-size:0.7rem" data-del="${i}">✕</button></td>
+  </tr>`).join('')
+  const base=f.lineas.reduce((s,l)=>s+l.qty*l.precio,0), iva=base*0.1, total=base+iva
+  return `<div class="card">
+    <div class="factura-header">
+      <div class="factura-from"><strong>Juan Manuel Garcia Martins</strong>Carretera EX-311 Km 13,700<br>06132 Higuera de Vargas (Badajoz)<br>C.I.F. 80073411-S</div>
+      <div class="factura-num">
+        <div>Factura Nº <input id="fac-num" value="${f.num_factura||''}" style="width:70px;border:none;border-bottom:1px solid #c9a84c;background:transparent;font-family:'Cinzel',serif;font-size:0.8rem;color:#8b6914;text-align:center"></div>
+        <div style="margin-top:0.3rem">Fecha: ${new Date().toLocaleDateString('es-ES')}</div>
+        <div style="margin-top:0.5rem;text-align:left"><span style="font-style:italic;font-size:0.85rem">Cliente:</span> ${ev.nombre_cliente||'—'}</div>
+        <div><span style="font-style:italic;font-size:0.85rem">N.I.F.:</span> ${ev.dni||'—'}</div>
+      </div>
+    </div>
+    <table class="factura-table" id="fac-table">
+      <thead><tr><th>Uds.</th><th>Concepto</th><th style="text-align:right">Precio</th><th style="text-align:right">Subtotal</th><th></th></tr></thead>
+      <tbody id="fac-body">${rows}</tbody>
+    </table>
+    <div style="display:flex;gap:0.5rem;margin-bottom:1rem">
+      <button class="btn-sm btn-secondary" id="btn-add-linea">+ Línea</button>
+      <button class="btn-sm btn-secondary print-btn" onclick="window.print()">🖨 Imprimir</button>
+    </div>
+    <div class="factura-totals" id="fac-totals">
+      <div class="factura-total-row"><span class="factura-total-label">Total</span><span class="factura-total-val">${base.toFixed(2)} €</span></div>
+      <div class="factura-total-row"><span class="factura-total-label">I.V.A. 10%</span><span class="factura-total-val">${iva.toFixed(2)} €</span></div>
+      <div class="factura-total-row grand"><span class="factura-total-label">Total Factura</span><span class="factura-total-val">${total.toFixed(2)} €</span></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-top:0.8rem">
+      <button class="btn-sm btn-primary btn-lg" id="btn-save-factura">Guardar Factura</button>
+    </div>
+  </div>`
+}
+
+function bindFactura(ev) {
+  const f = getFactura(ev)
+  function recalc() {
+    const base=f.lineas.reduce((s,l)=>s+l.qty*l.precio,0), iva=base*0.1, total=base+iva
+    document.getElementById('fac-totals').innerHTML=`
+      <div class="factura-total-row"><span class="factura-total-label">Total</span><span class="factura-total-val">${base.toFixed(2)} €</span></div>
+      <div class="factura-total-row"><span class="factura-total-label">I.V.A. 10%</span><span class="factura-total-val">${iva.toFixed(2)} €</span></div>
+      <div class="factura-total-row grand"><span class="factura-total-label">Total Factura</span><span class="factura-total-val">${total.toFixed(2)} €</span></div>`
+    rerender()
+  }
+  function rerender() {
+    const tbody = document.getElementById('fac-body')
+    if(!tbody) return
+    tbody.innerHTML = f.lineas.map((l,i)=>`<tr>
+      <td><input class="edit-input" data-fi="${i}" data-fk="qty" type="number" value="${l.qty}" style="width:60px;padding:0.25rem 0.4rem;border:1px solid #c9a84c88;border-radius:4px;font-family:inherit;background:#faf7f0"></td>
+      <td><input class="edit-input" data-fi="${i}" data-fk="desc" value="${l.desc}" style="width:100%;padding:0.25rem 0.4rem;border:1px solid #c9a84c88;border-radius:4px;font-family:inherit;background:#faf7f0"></td>
+      <td><input class="edit-input" data-fi="${i}" data-fk="precio" type="number" step="0.01" value="${l.precio}" style="width:80px;padding:0.25rem 0.4rem;border:1px solid #c9a84c88;border-radius:4px;font-family:inherit;background:#faf7f0;text-align:right"></td>
+      <td style="text-align:right;font-weight:600">${(l.qty*l.precio).toFixed(2)} €</td>
+      <td><button class="btn-sm btn-danger" style="padding:0.2rem 0.5rem;font-size:0.7rem" data-del="${i}">✕</button></td>
+    </tr>`).join('')
+    bindInputs()
+  }
+  function bindInputs() {
+    document.querySelectorAll('.edit-input[data-fi]').forEach(inp=>{
+      inp.oninput=()=>{
+        const i=parseInt(inp.dataset.fi), k=inp.dataset.fk
+        f.lineas[i][k] = k==='desc' ? inp.value : parseFloat(inp.value)||0
+        if(k!=='desc') recalc()
+        else { const base=f.lineas.reduce((s,l)=>s+l.qty*l.precio,0),iva=base*0.1,total=base+iva; document.getElementById('fac-totals').innerHTML=`<div class="factura-total-row"><span class="factura-total-label">Total</span><span class="factura-total-val">${base.toFixed(2)} €</span></div><div class="factura-total-row"><span class="factura-total-label">I.V.A. 10%</span><span class="factura-total-val">${iva.toFixed(2)} €</span></div><div class="factura-total-row grand"><span class="factura-total-label">Total Factura</span><span class="factura-total-val">${total.toFixed(2)} €</span></div>` }
+      }
+    })
+    document.querySelectorAll('[data-del]').forEach(btn=>{
+      btn.onclick=()=>{ f.lineas.splice(parseInt(btn.dataset.del),1); recalc() }
+    })
+  }
+  bindInputs()
+  document.getElementById('btn-add-linea').onclick=()=>{ f.lineas.push({qty:1,desc:'',precio:0}); rerender() }
+  document.getElementById('btn-save-factura').onclick = async () => {
+    f.num_factura = document.getElementById('fac-num').value
+    const {error} = await sb.from('eventos').update({factura_data:JSON.stringify(f)}).eq('id',ev.id)
+    if(error){toast('Error',true);return}
+    ev.factura_data = JSON.stringify(f)
+    toast('Factura guardada')
+  }
+  const savePreciosBtn = document.getElementById('btn-save-precios')
+  if(savePreciosBtn) savePreciosBtn.onclick = async () => {
+    const pa=parseFloat(document.getElementById('c-pa').value)||0
+    const pn=parseFloat(document.getElementById('c-pn').value)||0
+    await sb.from('eventos').update({precio_adulto:pa,precio_nino:pn}).eq('id',ev.id)
+    ev.precio_adulto=pa; ev.precio_nino=pn; toast('Precios guardados')
+  }
+}
+
+// ── TAB MATERIAS PRIMAS ──
+const MP = {
+  // carnes kg por comensal
+  'Solomillo de cerdo plancha':    {cat:'Carnes',ing:'Solomillo de cerdo',u:'kg',qty:0.25},
+  'Secreto ibérico':               {cat:'Carnes',ing:'Secreto ibérico',u:'kg',qty:0.28},
+  'Pluma ibérica':                 {cat:'Carnes',ing:'Pluma ibérica',u:'kg',qty:0.28},
+  'Presa ibérica':                 {cat:'Carnes',ing:'Presa ibérica',u:'kg',qty:0.28},
+  'Carrilleras al vino tinto':     {cat:'Carnes',ing:'Carrillera de cerdo',u:'kg',qty:0.3},
+  'Carrillada de iberico al vino tinto': {cat:'Carnes',ing:'Carrillera ibérica',u:'kg',qty:0.3},
+  'Chuletillas de cordero':        {cat:'Carnes',ing:'Chuletillas de cordero',u:'kg',qty:0.35},
+  'Entrecot de ternera':           {cat:'Carnes',ing:'Entrecot de ternera',u:'kg',qty:0.3},
+  'Chuletón de ternera (1 kg)':    {cat:'Carnes',ing:'Chuletón de ternera',u:'kg',qty:1.0},
+  'Filete de lomo de cerdo':       {cat:'Carnes',ing:'Lomo de cerdo',u:'kg',qty:0.22},
+  'Filetes de pechuga de pollo':   {cat:'Carnes',ing:'Pechuga de pollo',u:'kg',qty:0.22},
+  'Carne a la brasa o ajillo':     {cat:'Carnes',ing:'Carne mixta',u:'kg',qty:0.28},
+  'Torreznos':                     {cat:'Carnes',ing:'Panceta curada',u:'kg',qty:0.2},
+  // pescados
+  'Calamares romana':              {cat:'Pescados',ing:'Calamares',u:'kg',qty:0.2},
+  'Chipirones fritos o plancha':   {cat:'Pescados',ing:'Chipirones',u:'kg',qty:0.22},
+  'Sepia plancha':                 {cat:'Pescados',ing:'Sepia',u:'kg',qty:0.25},
+  'Chocos fritos':                 {cat:'Pescados',ing:'Chocos',u:'kg',qty:0.25},
+  'Langostinos plancha o ajillo':  {cat:'Pescados',ing:'Langostinos',u:'kg',qty:0.3},
+  'Langostinos de San Lucar':      {cat:'Pescados',ing:'Langostinos',u:'kg',qty:0.35},
+  'Pulpo a la gallega':            {cat:'Pescados',ing:'Pulpo',u:'kg',qty:0.3},
+  'Pulpo a la brasa':              {cat:'Pescados',ing:'Pulpo',u:'kg',qty:0.32},
+  'Bacalao dorado':                {cat:'Pescados',ing:'Bacalao',u:'kg',qty:0.2},
+  'Bacalao rebozado':              {cat:'Pescados',ing:'Bacalao',u:'kg',qty:0.2},
+  'Bacalao gratinado con ali oli': {cat:'Pescados',ing:'Bacalao',u:'kg',qty:0.22},
+  'Dorada a la espalda':           {cat:'Pescados',ing:'Dorada',u:'kg',qty:0.35},
+  'Mero a la plancha':             {cat:'Pescados',ing:'Mero',u:'kg',qty:0.3},
+  'Mero a la marinera':            {cat:'Pescados',ing:'Mero',u:'kg',qty:0.3},
+  'Salmón a la plancha':           {cat:'Pescados',ing:'Salmón',u:'kg',qty:0.25},
+  // entrantes
+  'Jamón ibérico':                 {cat:'Charcutería',ing:'Jamón ibérico',u:'kg',qty:0.06},
+  'Lomo ibérico':                  {cat:'Charcutería',ing:'Lomo ibérico',u:'kg',qty:0.05},
+  'Queso de oveja':                {cat:'Charcutería',ing:'Queso de oveja',u:'kg',qty:0.06},
+  'Morcon Iberico':                {cat:'Charcutería',ing:'Morcón ibérico',u:'kg',qty:0.05},
+  'Croquetas caseras de jamon':    {cat:'Elaborados',ing:'Croquetas de jamón',u:'uds',qty:3},
+  'Croquetas caseras de jamón':    {cat:'Elaborados',ing:'Croquetas de jamón',u:'uds',qty:3},
+  'Taquitos de Cazon en Adobo':    {cat:'Pescados',ing:'Cazón',u:'kg',qty:0.1},
+  'Calamares a la Romana':         {cat:'Pescados',ing:'Calamares',u:'kg',qty:0.15},
+  'Bacalao rebozado':              {cat:'Pescados',ing:'Bacalao',u:'kg',qty:0.15},
+  'Puntillitas':                   {cat:'Pescados',ing:'Puntillitas',u:'kg',qty:0.15},
+  'Choco frito':                   {cat:'Pescados',ing:'Chocos',u:'kg',qty:0.18},
+  // sopas/primeros
+  'Gazpacho':                      {cat:'Verduras',ing:'Tomate/Verduras gazpacho',u:'kg',qty:0.3},
+  'Sopa de pasta':                 {cat:'Varios',ing:'Pasta sopa',u:'kg',qty:0.08},
+  'Sopa de ajo':                   {cat:'Varios',ing:'Pan/ajo sopa',u:'kg',qty:0.1},
+  'Crema de marisco':              {cat:'Pescados',ing:'Marisco crema',u:'kg',qty:0.15},
+  // sorbetes
+  'Sorbete de limon al cava':      {cat:'Postres',ing:'Sorbete de limón',u:'uds',qty:1},
+  'Sorbete de manzana':            {cat:'Postres',ing:'Sorbete de manzana',u:'uds',qty:1},
+  // postres
+  'Tarta de comunion Kinder + Cafe':{cat:'Postres',ing:'Tarta Kinder + café',u:'raciones',qty:1},
+  'Flan casero':                   {cat:'Postres',ing:'Flan casero',u:'uds',qty:1},
+  'Natillas':                      {cat:'Postres',ing:'Natillas',u:'uds',qty:1},
+  // bebidas
+  'Cervezas + Refrescos + Agua + Rebujito':{cat:'Bebidas',ing:'Pack bebidas evento',u:'personas',qty:1},
+}
+
+function tabMaterias(ev) {
+  const m = getMenu(ev)
+  const adultos = ev.num_adultos||0, ninos = ev.num_ninos||0
+  const allItems = []
+  const allSecs = [...MENU_SECTIONS,...MENU_NINOS_SECTIONS]
+  for(const s of allSecs) {
+    const isNinos = s.key.startsWith('ninos_')
+    const n = isNinos ? ninos : adultos
+    for(const item of (m[s.key]||[])) {
+      const mp = MP[item]
+      if(mp) allItems.push({...mp, item, n, total: mp.qty * n})
+      else allItems.push({cat:'Sin datos',ing:item,u:'—',qty:0,item,n,total:0})
+    }
+  }
+  // Agrupar por ingrediente
+  const agg = {}
+  for(const x of allItems) {
+    const k = x.ing+'|||'+x.u+'|||'+x.cat
+    if(!agg[k]) agg[k]={cat:x.cat,ing:x.ing,u:x.u,total:0,items:[]}
+    agg[k].total += x.total
+    agg[k].items.push(x.item)
+  }
+  const cats = {}
+  for(const v of Object.values(agg)) {
+    if(!cats[v.cat]) cats[v.cat]=[]
+    cats[v.cat].push(v)
+  }
+  let html = `<div class="card">
+    <div class="card-title">Materias Primas Necesarias — ${adultos} adultos + ${ninos} niños</div>
+    <table class="mp-table">
+      <thead><tr><th>Categoría</th><th>Ingrediente</th><th>Platos que lo usan</th><th style="text-align:right">Cantidad total</th></tr></thead>
+      <tbody>`
+  for(const [cat, items] of Object.entries(cats).sort()) {
+    for(const x of items.sort((a,b)=>a.ing.localeCompare(b.ing))) {
+      html+=`<tr>
+        <td class="mp-cat">${cat}</td>
+        <td style="font-style:italic">${x.ing}</td>
+        <td style="font-size:0.82rem;color:#6b4f2a">${[...new Set(x.items)].join(', ')}</td>
+        <td style="text-align:right;font-family:'Cinzel',serif;font-weight:600">${x.u==='kg'?(x.total<1?(x.total*1000).toFixed(0)+' g':x.total.toFixed(2)+' kg'):x.total.toFixed(0)+' '+x.u}</td>
+      </tr>`
+    }
+  }
+  if(!allItems.length) html+=`<tr><td colspan="4" style="text-align:center;font-style:italic;color:#aaa;padding:1rem">Sin productos en el menú todavía</td></tr>`
+  html+=`</tbody></table></div>`
+  return html
+}
+
+// ── NUEVO EVENTO ──
+document.getElementById('btn-nuevo-evento').onclick=()=>document.getElementById('modal-nuevo').classList.add('open')
+document.getElementById('btn-modal-cancel').onclick=()=>document.getElementById('modal-nuevo').classList.remove('open')
+document.getElementById('btn-modal-save').onclick = async () => {
+  const nuevo = {
+    nombre_cliente: document.getElementById('mn-nombre').value.trim(),
+    telefono: document.getElementById('mn-tlf').value.trim(),
+    tipo_evento: document.getElementById('mn-evento').value,
+    evento_nombre: document.getElementById('mn-evento-nombre').value.trim(),
+    fecha: document.getElementById('mn-fecha').value,
+    hora: document.getElementById('mn-hora').value,
+    num_adultos: parseInt(document.getElementById('mn-adultos').value)||0,
+    num_ninos: parseInt(document.getElementById('mn-ninos').value)||0,
+  }
+  if(!nuevo.nombre_cliente||!nuevo.fecha){toast('Nombre y fecha son obligatorios',true);return}
+  const {data,error} = await sb.from('eventos').insert(nuevo).select().single()
+  if(error){toast('Error al crear evento',true);return}
+  eventos.push(data)
+  const d=new Date(data.fecha); calYear=d.getFullYear(); calMonth=d.getMonth()
+  renderCal(); renderEventList()
+  document.getElementById('modal-nuevo').classList.remove('open')
+  selectEvento(data); toast('Evento creado')
+}
+
+// BIND contrato precios desde contrato tab
+document.addEventListener('click', async (e) => {
+  if(e.target.id==='btn-save-precios' && currentEvento) {
+    const pa=parseFloat(document.getElementById('c-pa')?.value)||0
+    const pn=parseFloat(document.getElementById('c-pn')?.value)||0
+    await sb.from('eventos').update({precio_adulto:pa,precio_nino:pn}).eq('id',currentEvento.id)
+    currentEvento.precio_adulto=pa; currentEvento.precio_nino=pn; toast('Precios guardados')
+  }
+})
+
+loadAll()
+</script>
+</body>
+</html>
