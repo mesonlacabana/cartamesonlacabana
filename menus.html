@@ -502,12 +502,26 @@ function tabCocina(ev){
   return h
 }
 
+// ── CALCULAR PRECIO POR PERSONA DESDE MENÚ ──
+function calcPrecioMenu(ev, esNinos=false){
+  const m=getMenu(ev)
+  const secs=esNinos?MENU_NINOS:MENU_SECS
+  let total=0
+  for(const s of secs){
+    for(const item of(m[s.key]||[])){
+      const prod=productos.find(p=>p.nombre===item)
+      if(prod&&prod.precio) total+=Number(prod.precio)
+    }
+  }
+  return total
+}
+
 // ── FICHA CLIENTE MENÚ ──
 function tabFichaCliente(ev){
   const m=getMenu(ev),a=ev.num_adultos||0,n=ev.num_ninos||0
-  const pa=ev.precio_adulto||0,pn=ev.precio_nino||0
+  const pa=calcPrecioMenu(ev,false), pn=calcPrecioMenu(ev,true)
   const ta=a*pa,tn=n*pn,base=ta+tn,iva=base*0.1,total=base+iva
-  function secBlock(secs,comensales,precioP){
+  function secBlock(secs){
     let h=''
     for(const s of secs){const items=m[s.key]||[];if(!items.length)continue;h+=`<div class="cocina-block"><div class="cocina-block-title">${s.label}</div>${items.map(it=>`<div class="cocina-item">${it}</div>`).join('')}</div>`}
     return h
@@ -518,11 +532,11 @@ function tabFichaCliente(ev){
   </div>
   <div class="card">
     <div class="card-title">Menú Adultos — ${pa.toFixed(2)} € / persona</div>
-    <div class="cocina-grid">${secBlock(MENU_SECS,a,pa)}</div>
+    <div class="cocina-grid">${secBlock(MENU_SECS)}</div>
     <div style="margin-top:0.8rem;text-align:right;font-family:'Cinzel',serif;font-size:0.88rem;color:#4a2c0a">${a} personas × ${pa.toFixed(2)} € = <strong>${ta.toFixed(2)} €</strong></div>
   </div>
   ${n>0?`<div class="card"><div class="card-title">Menú Niños — ${pn.toFixed(2)} € / persona</div>
-    <div class="cocina-grid">${secBlock(MENU_NINOS,n,pn)}</div>
+    <div class="cocina-grid">${secBlock(MENU_NINOS)}</div>
     <div style="margin-top:0.8rem;text-align:right;font-family:'Cinzel',serif;font-size:0.88rem;color:#4a2c0a">${n} niños × ${pn.toFixed(2)} € = <strong>${tn.toFixed(2)} €</strong></div>
   </div>`:''}
   <div class="card" style="background:#faf7f0">
@@ -553,7 +567,7 @@ function tabReserva(ev){return`<div class="card">
 
 // ── CONTRATO ──
 function tabContrato(ev){
-  const fa=ev.precio_adulto||0,fn=ev.precio_nino||0
+  const fa=calcPrecioMenu(ev,false), fn=calcPrecioMenu(ev,true)
   const ta=(ev.num_adultos||0)*fa,tn=(ev.num_ninos||0)*fn
   const base=ta+tn,iva=base*0.1,total=base+iva
   const hoy=new Date().toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'})
@@ -586,7 +600,7 @@ function bindContrato(ev){}
 // ── FACTURA ──
 function getFactura(ev){
   if(ev.factura_data){const f=typeof ev.factura_data==='string'?JSON.parse(ev.factura_data):ev.factura_data;return f}
-  const fa=ev.precio_adulto||0,fn=ev.precio_nino||0
+  const fa=calcPrecioMenu(ev,false), fn=calcPrecioMenu(ev,true)
   const lineas=[]
   if(ev.num_adultos)lineas.push({desc:'Menús Adultos',qty:ev.num_adultos,precio:fa})
   if(ev.num_ninos)lineas.push({desc:'Menús Niños',qty:ev.num_ninos,precio:fn})
