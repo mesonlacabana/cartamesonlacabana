@@ -339,7 +339,6 @@ const TABS=[
   {id:'ficha',    label:'Ficha Cliente'},
   {id:'menu',     label:'Confección Menú'},
   {id:'cocina',   label:'Ficha Cocina'},
-  {id:'aperitivos',label:'Aperitivos/Barra'},
   {id:'fcli',     label:'Ficha Cliente Menú'},
   {id:'contrato', label:'Contrato'},
   {id:'factura',  label:'Factura'},
@@ -358,7 +357,6 @@ function renderTabContent(ev){
   if(activeTab==='ficha'){body.innerHTML=tabFicha(ev);bindFicha(ev)}
   else if(activeTab==='menu'){body.innerHTML=tabMenu(ev);bindMenu(ev)}
   else if(activeTab==='cocina'){body.innerHTML=tabCocina(ev)}
-  else if(activeTab==='aperitivos'){body.innerHTML=tabAperitivos(ev)}
   else if(activeTab==='fcli'){body.innerHTML=tabFichaCliente(ev)}
   else if(activeTab==='contrato'){body.innerHTML=tabContrato(ev)}
   else if(activeTab==='factura'){body.innerHTML=tabFactura(ev);bindFactura(ev)}
@@ -475,20 +473,6 @@ function tabCocina(ev){
   }
   if(ev.observaciones)h+=`<div class="card"><div class="card-title">Observaciones</div><div style="font-style:italic;line-height:1.7">${ev.observaciones}</div></div>`
   return h
-}
-
-// ── TAB APERITIVOS/BARRA ──
-function tabAperitivos(ev){
-  const m=getMenu(ev), a=ev.num_adultos||0, n=ev.num_ninos||0, total=a+n
-  const items=m['aperitivos']||[]
-  return`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem">
-    <div style="font-family:'Cinzel',serif;font-size:0.72rem;color:#8b6914;letter-spacing:0.12em;text-transform:uppercase">${ev.evento_nombre||'Evento'} · ${ev.fecha||''}</div>
-    <button class="btn btn-secondary" onclick="window.print()">🖨 Imprimir</button>
-  </div>
-  <div class="card"><div class="card-title">Barra Libre/Aperitivo — ${total} personas</div>
-    ${items.length?`<div class="cocina-grid">${items.map(it=>`<div class="cocina-block"><div class="cocina-item">${it}<span class="qty">× ${total}</span></div></div>`).join('')}</div>`
-    :'<div style="font-style:italic;color:#aaa;text-align:center;padding:1rem">Sin productos de barra libre/aperitivo añadidos en el menú</div>'}
-  </div>`
 }
 
 // ── TAB FICHA CLIENTE MENÚ ──
