@@ -780,6 +780,8 @@ document.getElementById('btn-modal-cancel').onclick=()=>document.getElementById(
 document.getElementById('btn-modal-save').onclick=async()=>{
   const nuevo={nombre_cliente:document.getElementById('mn-nombre').value.trim(),telefono:document.getElementById('mn-tlf').value.trim(),tipo_evento:document.getElementById('mn-tipo').value,evento_nombre:document.getElementById('mn-evnombre').value.trim(),fecha:document.getElementById('mn-fecha').value,hora:document.getElementById('mn-hora').value,num_adultos:parseInt(document.getElementById('mn-adultos').value)||0,num_ninos:parseInt(document.getElementById('mn-ninos').value)||0}
   if(!nuevo.nombre_cliente||!nuevo.fecha){toast('Nombre y fecha son obligatorios',true);return}
+  const{data:sessionData}=await sb.auth.getSession()
+  if(!sessionData.session){toast('No hay sesión activa. Vuelve a iniciar sesión.',true);return}
   const{data,error}=await sb.from('eventos').insert(nuevo).select().single()
   if(error){toast('Error al crear: '+error.message,true);return}
   eventos.push(data); const d=new Date(data.fecha); calYear=d.getFullYear(); calMonth=d.getMonth()
