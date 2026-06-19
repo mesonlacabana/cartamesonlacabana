@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Trabajadores - La Cabaña</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#f5f0e8;color:#2a1f0e;font-family:'EB Garamond',Georgia,serif;font-size:15px}
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh}
+.login-card{background:#fff;border:1px solid #c9a84c;border-radius:12px;padding:2.5rem 2rem;width:100%;max-width:380px;box-shadow:0 4px 24px #8b691422}
+.login-title{font-family:'Cinzel',serif;font-size:1.3rem;color:#4a2c0a;text-align:center;margin-bottom:0.2rem}
+.login-sub{font-family:'Cinzel',serif;font-size:0.68rem;color:#8b6914;letter-spacing:0.2em;text-align:center;margin-bottom:1.8rem;text-transform:uppercase}
+.lfield{margin-bottom:1.1rem}
+.lfield label{display:block;font-size:0.88rem;color:#6b4f2a;font-style:italic;margin-bottom:0.35rem}
+.lfield input{width:100%;padding:0.6rem 0.8rem;border:1px solid #c9a84c88;border-radius:6px;font-size:1rem;font-family:inherit;background:#faf7f0;color:#2a1f0e;outline:none}
+.lfield input:focus{border-color:#8b6914}
+.btn-login{width:100%;padding:0.75rem;background:#4a2c0a;color:#f5f0e8;font-family:'Cinzel',serif;font-size:0.88rem;letter-spacing:0.15em;border:none;border-radius:6px;cursor:pointer;margin-top:0.3rem}
+.btn-login:hover{background:#6b4f2a}
+.login-err{color:#a32d2d;font-size:0.85rem;text-align:center;margin-top:0.7rem;min-height:1.2rem;font-style:italic}
+.topbar{background:#4a2c0a;color:#f5f0e8;display:flex;align-items:center;justify-content:space-between;padding:0.6rem 1.2rem;gap:1rem}
+.topbar-title{font-family:'Cinzel',serif;font-size:1rem;letter-spacing:0.1em}
+.topbar-sub{font-family:'Cinzel',serif;font-size:0.65rem;color:#c9a84c;letter-spacing:0.2em;text-transform:uppercase}
+.topbar-right{display:flex;gap:0.5rem}
+.btn-top{font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.1em;background:transparent;border:1px solid #c9a84c88;color:#c9a84c;padding:0.42rem 0.9rem;border-radius:6px;cursor:pointer}
+.btn-top:hover{background:#c9a84c22}
+.btn-top.solid{background:#8b6914;border-color:#8b6914;color:#f5f0e8}
+.btn-top.solid:hover{background:#c9a84c;color:#2a1f0e}
+.content{max-width:1100px;margin:0 auto;padding:1.5rem}
+.card{background:#fff;border:1px solid #c9a84c44;border-radius:10px;padding:1.1rem 1.4rem;margin-bottom:1rem}
+.card-title{font-family:'Cinzel',serif;font-size:0.75rem;color:#8b6914;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.9rem;padding-bottom:0.4rem;border-bottom:1px solid #c9a84c33}
+.notice{background:#fdf6e3;border:1px solid #c9a84c66;border-radius:8px;padding:0.8rem 1rem;font-size:0.85rem;font-style:italic;color:#6b4f2a;margin-bottom:1rem;line-height:1.6}
+.fg{display:grid;gap:0.75rem}
+.fg-2{grid-template-columns:1fr 1fr}.fg-3{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:700px){.fg-2,.fg-3{grid-template-columns:1fr 1fr}}
+.field label{display:block;font-size:0.76rem;color:#6b4f2a;font-style:italic;margin-bottom:0.25rem}
+.inp{width:100%;padding:0.42rem 0.6rem;border:1px solid #c9a84c88;border-radius:6px;font-size:0.93rem;font-family:inherit;background:#faf7f0;color:#2a1f0e;outline:none}
+.inp:focus{border-color:#8b6914}
+.inp-sm{padding:0.3rem 0.5rem;font-size:0.85rem}
+.btn{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.08em;padding:0.38rem 0.8rem;border:none;border-radius:6px;cursor:pointer}
+.btn-primary{background:#4a2c0a;color:#f5f0e8}.btn-primary:hover{background:#6b4f2a}
+.btn-secondary{background:#f0e8d0;color:#4a2c0a;border:1px solid #c9a84c}.btn-secondary:hover{background:#e8dcc0}
+.btn-danger{background:#791f1f;color:#f5f0e8}.btn-danger:hover{background:#a32d2d}
+.btn-lg{padding:0.55rem 1.3rem;font-size:0.78rem}
+.btn:disabled{opacity:0.4;cursor:not-allowed}
+.worker-card{background:#faf7f0;border:1px solid #c9a84c44;border-radius:8px;padding:0.9rem 1.1rem;margin-bottom:0.7rem}
+.worker-header{display:flex;justify-content:space-between;align-items:flex-start;gap:0.6rem}
+.worker-name{font-style:italic;font-size:1.02rem;font-weight:500}
+.worker-pin{font-family:'Cinzel',serif;font-size:0.78rem;color:#8b6914;letter-spacing:0.1em}
+.worker-actions{display:flex;gap:0.4rem;align-items:center}
+.badge{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.08em;padding:0.15rem 0.5rem;border-radius:10px;text-transform:uppercase}
+.badge.activo{background:#dff0e3;color:#0f6e56}
+.badge.inactivo{background:#fcebeb;color:#a32d2d}
+.badge.rgpd-ok{background:#dff0e3;color:#0f6e56}
+.badge.rgpd-no{background:#fcebeb;color:#a32d2d}
+.horarios-list{margin-top:0.6rem;padding-left:0.5rem;border-left:2px solid #c9a84c44;display:flex;flex-wrap:wrap;gap:0.4rem}
+.horario-tag{font-size:0.8rem;font-style:italic;color:#6b4f2a;background:#f0e8d0;border-radius:4px;padding:0.18rem 0.5rem;display:flex;align-items:center;gap:0.3rem}
+.horario-tag .rm{cursor:pointer;color:#a32d2d;font-style:normal;font-weight:600;font-size:0.72rem}
+.data-table{width:100%;border-collapse:collapse;font-size:0.85rem}
+.data-table th{font-family:'Cinzel',serif;font-size:0.6rem;color:#8b6914;letter-spacing:0.12em;text-transform:uppercase;padding:0.4rem 0.5rem;border-bottom:1px solid #c9a84c;text-align:left}
+.data-table td{padding:0.36rem 0.5rem;border-bottom:1px dotted #c9a84c33}
+.data-table tr:hover td{background:#fff}
+.tag-fuera{color:#a32d2d;font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.05em;text-transform:uppercase;background:#fcebeb;padding:0.1rem 0.4rem;border-radius:4px}
+.tag-anulado{color:#6b4f2a;font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.05em;text-transform:uppercase;background:#e8e0d0;padding:0.1rem 0.4rem;border-radius:4px;text-decoration:line-through}
+.tag-entrada{color:#0f6e56;font-family:'Cinzel',serif;font-size:0.66rem;letter-spacing:0.06em;text-transform:uppercase}
+.tag-salida{color:#a3621f;font-family:'Cinzel',serif;font-size:0.66rem;letter-spacing:0.06em;text-transform:uppercase}
+.tag-creado-admin{color:#185fa5;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.05em;text-transform:uppercase;background:#e6f1fb;padding:0.08rem 0.35rem;border-radius:4px}
+.modal-bg{position:fixed;inset:0;background:#0005;display:none;align-items:center;justify-content:center;z-index:1000;padding:1rem}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:12px;padding:1.8rem;width:95%;max-width:680px;border:1px solid #c9a84c;max-height:92vh;overflow-y:auto}
+.modal-title{font-family:'Cinzel',serif;font-size:0.88rem;color:#4a2c0a;margin-bottom:1rem;letter-spacing:0.1em}
+.modal-actions{display:flex;gap:0.5rem;justify-content:flex-end;margin-top:1rem;flex-wrap:wrap}
+#toast{position:fixed;bottom:1.2rem;right:1.2rem;background:#4a2c0a;color:#f5f0e8;font-family:'Cinzel',serif;font-size:0.73rem;letter-spacing:0.1em;padding:0.55rem 1.1rem;border-radius:8px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:9999}
+#toast.show{opacity:1}#toast.err{background:#791f1f}
+.empty-msg{font-style:italic;color:#aaa;font-size:0.88rem;padding:0.6rem 0}
+.section-divider{font-family:'Cinzel',serif;font-size:0.68rem;color:#8b6914;letter-spacing:0.15em;text-transform:uppercase;margin:1rem 0 0.5rem;padding-top:0.7rem;border-top:1px dashed #c9a84c55}
+.tabs2{display:flex;gap:0;border-bottom:2px solid #c9a84c44;margin-bottom:1rem}
+.tab2{font-family:'Cinzel',serif;font-size:0.66rem;letter-spacing:0.1em;color:#8b6914;background:none;border:none;padding:0.5rem 0.9rem;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;text-transform:uppercase}
+.tab2.active{color:#4a2c0a;border-bottom-color:#8b6914;font-weight:600}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-title">La Cabaña</div>
+    <div class="login-sub">Admin Trabajadores</div>
+    <div class="lfield"><label>Usuario</label><input id="l-user" type="text" autocomplete="username"></div>
+    <div class="lfield"><label>Contraseña</label><input id="l-pass" type="password" autocomplete="current-password"></div>
+    <button class="btn-login" id="btn-login">Entrar</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
+
+<div id="app-screen" style="display:none">
+  <div class="topbar">
+    <div><div class="topbar-title">La Cabaña</div><div class="topbar-sub">Admin Trabajadores</div></div>
+    <div class="topbar-right">
+      <button class="btn-top solid" id="btn-export-all">⬇ Exportar todo (CSV)</button>
+      <button class="btn-top" id="btn-logout">Salir</button>
+    </div>
+  </div>
+  <div class="content">
+    <div class="notice">
+      <strong style="font-family:'Cinzel',serif;font-size:0.78rem">Control horario — cumplimiento legal:</strong><br>
+      Los fichajes no se pueden editar ni borrar directamente. Cualquier corrección genera una entrada de auditoría inmutable con usuario, fecha y motivo. Conserva estos registros un mínimo de <strong>4 años</strong>.
+    </div>
+
+    <div class="card">
+      <div class="card-title">Añadir Trabajador</div>
+      <div class="fg fg-3" style="margin-bottom:0.7rem">
+        <div class="field"><label>Nombre</label><input class="inp" id="nw-nombre" placeholder="Nombre del trabajador"></div>
+        <div class="field"><label>PIN (4 dígitos)</label><input class="inp" id="nw-pin" maxlength="6" placeholder="1234"></div>
+        <div class="field" style="display:flex;align-items:flex-end"><button class="btn btn-primary btn-lg" id="btn-add-worker" style="width:100%">+ Añadir Trabajador</button></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Trabajadores</div>
+      <div id="workers-list"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Log de Auditoría Global (inmutable)</div>
+      <div id="audit-global" style="max-height:280px;overflow-y:auto"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR / HORARIOS -->
+<div class="modal-bg" id="modal-worker">
+  <div class="modal">
+    <div class="modal-title" id="mw-title">Gestionar Trabajador</div>
+
+    <div class="tabs2">
+      <button class="tab2 active" data-mtab="datos">Datos</button>
+      <button class="tab2" data-mtab="horario">Horario</button>
+      <button class="tab2" data-mtab="historial">Historial / Corregir</button>
+      <button class="tab2" data-mtab="rgpd">RGPD</button>
+    </div>
+
+    <div id="mtab-datos">
+      <div class="fg fg-2" style="margin-bottom:1rem">
+        <div class="field"><label>Nombre</label><input class="inp" id="mw-nombre"></div>
+        <div class="field"><label>PIN</label><input class="inp" id="mw-pin" maxlength="6"></div>
+      </div>
+      <div style="display:flex;justify-content:flex-end"><button class="btn btn-primary" id="btn-mw-save-datos">Guardar Datos</button></div>
+    </div>
+
+    <div id="mtab-horario" style="display:none">
+      <div id="mw-horarios-list" style="display:flex;flex-direction:column;gap:0.4rem;margin-bottom:0.6rem"></div>
+      <div class="fg fg-3" style="gap:0.5rem;margin-bottom:0.8rem">
+        <div class="field"><label>Día</label>
+          <select class="inp inp-sm" id="mw-dia">
+            <option value="1">Lunes</option><option value="2">Martes</option><option value="3">Miércoles</option>
+            <option value="4">Jueves</option><option value="5">Viernes</option><option value="6">Sábado</option><option value="7">Domingo</option>
+          </select>
+        </div>
+        <div class="field"><label>Desde</label><input class="inp inp-sm" type="time" id="mw-inicio"></div>
+        <div class="field"><label>Hasta</label><input class="inp inp-sm" type="time" id="mw-fin"></div>
+      </div>
+      <div style="display:flex;justify-content:flex-end"><button class="btn btn-secondary" id="btn-add-horario">+ Añadir Tramo</button></div>
+    </div>
+
+    <div id="mtab-historial" style="display:none">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:0.6rem"><button class="btn btn-secondary" id="btn-export-worker">⬇ Exportar CSV de este trabajador</button></div>
+      <div id="mw-historial" style="max-height:240px;overflow-y:auto;margin-bottom:1rem"></div>
+      <div class="section-divider">Corregir fichaje olvidado</div>
+      <div class="notice" style="margin-bottom:0.7rem">No se modifica ningún registro existente. Si un fichaje está mal o falta, anula el incorrecto (si lo hay) indicando el motivo, y/o añade el fichaje correcto manualmente. Todo queda firmado con tu usuario admin y la fecha real de la corrección.</div>
+      <div class="fg fg-3" style="gap:0.5rem;margin-bottom:0.6rem">
+        <div class="field"><label>Tipo</label><select class="inp inp-sm" id="mc-tipo"><option value="entrada">Entrada</option><option value="salida">Salida</option></select></div>
+        <div class="field"><label>Fecha y hora real</label><input class="inp inp-sm" type="datetime-local" id="mc-fechahora"></div>
+        <div class="field" style="display:flex;align-items:flex-end"><button class="btn btn-secondary" id="btn-add-correccion" style="width:100%">+ Añadir fichaje manual</button></div>
+      </div>
+      <div class="field"><label>Motivo de la corrección (obligatorio)</label><input class="inp inp-sm" id="mc-motivo" placeholder="Ej: se le olvidó fichar la entrada"></div>
+    </div>
+
+    <div id="mtab-rgpd" style="display:none">
+      <div class="notice">Marca esta casilla únicamente cuando hayas entregado al trabajador el documento informativo sobre el registro de su jornada (finalidad, datos tratados, plazo de conservación de 4 años y dónde se almacenan), conforme al Art. 6.1.c y deber de información del RGPD.</div>
+      <div id="mw-rgpd-status" style="margin-bottom:0.8rem"></div>
+      <button class="btn btn-primary" id="btn-mark-rgpd">Marcar como informado hoy</button>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-danger" id="btn-mw-delete">Eliminar Trabajador</button>
+      <button class="btn btn-secondary" id="btn-mw-close">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+const sb = createClient('https://ycevaztpxjfnbwjmojhx.supabase.co','sb_publishable_qVRqDvEojdSXXFogpx6iHA_oDn1L0R1')
+
+let trabajadores=[], horarios=[], fichajes=[], auditoria=[]
+let editingWorkerId=null
+let currentAdminUser=''
+const DIAS=['','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo']
+
+function toast(msg,err=false){const t=document.getElementById('toast');t.textContent=msg;t.className='show'+(err?' err':'');clearTimeout(t._t);t._t=setTimeout(()=>t.className='',2600)}
+async function sha256(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')}
+
+// LOGIN (Supabase Auth)
+document.getElementById('l-pass').onkeydown=e=>{if(e.key==='Enter')document.getElementById('btn-login').click()}
+document.getElementById('btn-login').onclick=async()=>{
+  const user=document.getElementById('l-user').value.trim(), pass=document.getElementById('l-pass').value
+  const err=document.getElementById('login-err'); err.textContent=''
+  if(!user||!pass){err.textContent='Rellena todos los campos.';return}
+  const email = user.includes('@') ? user : user.toLowerCase()+'@lacabana.local'
+  const{data,error}=await sb.auth.signInWithPassword({email,password:pass})
+  if(error||!data.session){err.textContent='Usuario o contraseña incorrectos.';return}
+  currentAdminUser=user
+  showApp()
+}
+document.getElementById('btn-logout').onclick=async()=>{await sb.auth.signOut();document.getElementById('app-screen').style.display='none';document.getElementById('login-screen').style.display='flex'}
+function showApp(){document.getElementById('login-screen').style.display='none';document.getElementById('app-screen').style.display='block';loadAll()}
+sb.auth.getSession().then(({data})=>{
+  if(data.session){currentAdminUser=data.session.user.email.split('@')[0];showApp()}
+})
+
+// LOAD
+async function loadAll(){
+  const[tr,ho,fi,au]=await Promise.all([
+    sb.from('trabajadores').select('*').order('nombre'),
+    sb.from('trabajador_horarios').select('*').order('dia_semana'),
+    sb.from('fichajes').select('*').order('fecha_hora',{ascending:false}),
+    sb.from('fichajes_auditoria').select('*').order('fecha_hora',{ascending:false})
+  ])
+  if(tr.data)trabajadores=tr.data; if(ho.data)horarios=ho.data; if(fi.data)fichajes=fi.data; if(au.data)auditoria=au.data
+  renderWorkers(); renderAuditGlobal()
+}
+
+function renderWorkers(){
+  const el=document.getElementById('workers-list')
+  if(!trabajadores.length){el.innerHTML='<div class="empty-msg">Sin trabajadores aún</div>';return}
+  el.innerHTML=trabajadores.map(w=>{
+    const hs=horarios.filter(h=>h.trabajador_id===w.id)
+    return`<div class="worker-card">
+      <div class="worker-header">
+        <div>
+          <div class="worker-name">${w.nombre}
+            <span class="badge ${w.activo?'activo':'inactivo'}">${w.activo?'Activo':'Inactivo'}</span>
+            <span class="badge ${w.informado_rgpd?'rgpd-ok':'rgpd-no'}">${w.informado_rgpd?'RGPD ✓':'RGPD pendiente'}</span>
+          </div>
+          <div class="worker-pin">PIN: ${w.pin}</div>
+        </div>
+        <div class="worker-actions"><button class="btn btn-secondary" data-edit="${w.id}">✎ Gestionar</button></div>
+      </div>
+      ${hs.length?`<div class="horarios-list">${hs.map(h=>`<span class="horario-tag">${DIAS[h.dia_semana]} ${h.hora_inicio.slice(0,5)}–${h.hora_fin.slice(0,5)}</span>`).join('')}</div>`:'<div class="empty-msg" style="padding:0.3rem 0 0">Sin horario asignado</div>'}
+    </div>`
+  }).join('')
+  document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>openWorkerModal(parseInt(b.dataset.edit)))
+}
+
+// ADD WORKER
+document.getElementById('btn-add-worker').onclick=async()=>{
+  const nombre=document.getElementById('nw-nombre').value.trim()
+  const pin=document.getElementById('nw-pin').value.trim()
+  if(!nombre||!pin){toast('Rellena nombre y PIN',true);return}
+  if(trabajadores.some(t=>t.pin===pin)){toast('Ese PIN ya está en uso',true);return}
+  const{data,error}=await sb.from('trabajadores').insert({nombre,pin,activo:true}).select().single()
+  if(error){toast('Error: '+error.message,true);return}
+  trabajadores.push(data)
+  document.getElementById('nw-nombre').value=''; document.getElementById('nw-pin').value=''
+  renderWorkers(); toast('Trabajador añadido')
+}
+
+// MODAL TABS
+document.querySelectorAll('[data-mtab]').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('[data-mtab]').forEach(x=>x.classList.remove('active'))
+  b.classList.add('active')
+  ;['datos','horario','historial','rgpd'].forEach(t=>document.getElementById('mtab-'+t).style.display=t===b.dataset.mtab?'block':'none')
+})
+
+// MODAL GESTIONAR
+function openWorkerModal(id){
+  editingWorkerId=id
+  const w=trabajadores.find(t=>t.id===id)
+  document.getElementById('mw-title').textContent='Gestionar: '+w.nombre
+  document.getElementById('mw-nombre').value=w.nombre
+  document.getElementById('mw-pin').value=w.pin
+  renderHorariosModal(); renderHistorialModal(); renderRgpdModal()
+  document.getElementById('modal-worker').classList.add('open')
+}
+document.getElementById('btn-mw-save-datos').onclick=async()=>{
+  const nombre=document.getElementById('mw-nombre').value.trim()
+  const pin=document.getElementById('mw-pin').value.trim()
+  if(!nombre||!pin){toast('Rellena nombre y PIN',true);return}
+  if(trabajadores.some(t=>t.pin===pin&&t.id!==editingWorkerId)){toast('Ese PIN ya está en uso',true);return}
+  const{error}=await sb.from('trabajadores').update({nombre,pin}).eq('id',editingWorkerId)
+  if(error){toast('Error',true);return}
+  const idx=trabajadores.findIndex(t=>t.id===editingWorkerId); if(idx>-1)Object.assign(trabajadores[idx],{nombre,pin})
+  renderWorkers(); toast('Datos guardados')
+}
+
+function renderHorariosModal(){
+  const hs=horarios.filter(h=>h.trabajador_id===editingWorkerId).sort((a,b)=>a.dia_semana-b.dia_semana)
+  const el=document.getElementById('mw-horarios-list')
+  if(!hs.length){el.innerHTML='<div class="empty-msg">Sin tramos horarios añadidos</div>';return}
+  el.innerHTML=hs.map(h=>`<div class="horario-tag" style="justify-content:space-between;width:fit-content">
+    <span>${DIAS[h.dia_semana]}: ${h.hora_inicio.slice(0,5)} – ${h.hora_fin.slice(0,5)}</span>
+    <span class="rm" data-del-h="${h.id}">✕</span>
+  </div>`).join('')
+  document.querySelectorAll('[data-del-h]').forEach(el2=>el2.onclick=async()=>{
+    const id=parseInt(el2.dataset.delH)
+    await sb.from('trabajador_horarios').delete().eq('id',id)
+    horarios=horarios.filter(h=>h.id!==id); renderHorariosModal(); renderWorkers(); toast('Tramo eliminado')
+  })
+}
+document.getElementById('btn-add-horario').onclick=async()=>{
+  const dia=parseInt(document.getElementById('mw-dia').value)
+  const inicio=document.getElementById('mw-inicio').value, fin=document.getElementById('mw-fin').value
+  if(!inicio||!fin){toast('Rellena las horas',true);return}
+  const{data,error}=await sb.from('trabajador_horarios').insert({trabajador_id:editingWorkerId,dia_semana:dia,hora_inicio:inicio,hora_fin:fin}).select().single()
+  if(error){toast('Error',true);return}
+  horarios.push(data); renderHorariosModal(); renderWorkers(); toast('Tramo añadido')
+}
+
+// HISTORIAL + CORRECCIONES (sin editar/borrar, todo con auditoría)
+function renderHistorialModal(){
+  const fs=fichajes.filter(f=>f.trabajador_id===editingWorkerId)
+  const el=document.getElementById('mw-historial')
+  if(!fs.length){el.innerHTML='<div class="empty-msg">Sin fichajes registrados</div>';return}
+  el.innerHTML=`<table class="data-table"><thead><tr><th>Fecha</th><th>Hora</th><th>Tipo</th><th>Origen</th><th>Estado</th><th></th></tr></thead><tbody>
+    ${fs.map(f=>{
+      const d=new Date(f.fecha_hora)
+      return`<tr>
+        <td>${d.toLocaleDateString('es-ES')}</td>
+        <td>${d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}</td>
+        <td><span class="${f.tipo==='entrada'?'tag-entrada':'tag-salida'}">${f.tipo}</span></td>
+        <td>${f.creado_por==='admin'?'<span class="tag-creado-admin">Admin</span>':'Trabajador'}</td>
+        <td>${f.anulado?'<span class="tag-anulado">Anulado</span>':(f.fuera_de_horario?'<span class="tag-fuera">Fuera horario</span>':'')}</td>
+        <td>${!f.anulado?`<button class="btn btn-danger" style="padding:0.15rem 0.4rem;font-size:0.62rem" data-anular="${f.id}">Anular</button>`:''}</td>
+      </tr>`
+    }).join('')}
+  </tbody></table>`
+  document.querySelectorAll('[data-anular]').forEach(b=>b.onclick=()=>anularFichaje(parseInt(b.dataset.anular)))
+}
+
+async function anularFichaje(fichajeId){
+  const motivo=document.getElementById('mc-motivo').value.trim()
+  if(!motivo){toast('Escribe primero el motivo de la corrección abajo',true);return}
+  if(!confirm('¿Anular este fichaje? Quedará marcado como anulado pero NO se borrará, y se registrará en el log de auditoría.'))return
+  const fichaje=fichajes.find(f=>f.id===fichajeId)
+  const{error}=await sb.from('fichajes').update({anulado:true,anulado_motivo:motivo}).eq('id',fichajeId)
+  if(error){toast('Error',true);return}
+  fichaje.anulado=true; fichaje.anulado_motivo=motivo
+  await sb.from('fichajes_auditoria').insert({
+    fichaje_id:fichajeId, trabajador_id:editingWorkerId, accion:'anulacion',
+    admin_usuario:currentAdminUser,
+    dato_anterior:{tipo:fichaje.tipo,fecha_hora:fichaje.fecha_hora,anulado:false},
+    dato_nuevo:{tipo:fichaje.tipo,fecha_hora:fichaje.fecha_hora,anulado:true},
+    motivo
+  })
+  await loadAll(); renderHistorialModal(); toast('Fichaje anulado y registrado en auditoría')
+}
+
+document.getElementById('btn-add-correccion').onclick=async()=>{
+  const tipo=document.getElementById('mc-tipo').value
+  const fechahora=document.getElementById('mc-fechahora').value
+  const motivo=document.getElementById('mc-motivo').value.trim()
+  if(!fechahora){toast('Indica la fecha y hora real',true);return}
+  if(!motivo){toast('El motivo es obligatorio',true);return}
+  const fechaISO=new Date(fechahora).toISOString()
+  const{data,error}=await sb.from('fichajes').insert({trabajador_id:editingWorkerId,tipo,fecha_hora:fechaISO,fuera_de_horario:false,creado_por:'admin'}).select().single()
+  if(error){toast('Error',true);return}
+  fichajes.unshift(data)
+  await sb.from('fichajes_auditoria').insert({
+    fichaje_id:data.id, trabajador_id:editingWorkerId, accion:'correccion_manual',
+    admin_usuario:currentAdminUser, dato_anterior:null,
+    dato_nuevo:{tipo,fecha_hora:fechaISO,creado_por:'admin'},
+    motivo
+  })
+  document.getElementById('mc-fechahora').value=''; document.getElementById('mc-motivo').value=''
+  await loadAll(); renderHistorialModal(); toast('Fichaje manual añadido y firmado en auditoría')
+}
+
+// RGPD
+function renderRgpdModal(){
+  const w=trabajadores.find(t=>t.id===editingWorkerId)
+  const el=document.getElementById('mw-rgpd-status')
+  el.innerHTML = w.informado_rgpd
+    ? `<div class="badge rgpd-ok" style="font-size:0.7rem;padding:0.3rem 0.7rem">Informado el ${new Date(w.informado_rgpd_fecha).toLocaleDateString('es-ES')}</div>`
+    : `<div class="badge rgpd-no" style="font-size:0.7rem;padding:0.3rem 0.7rem">Pendiente de informar</div>`
+}
+document.getElementById('btn-mark-rgpd').onclick=async()=>{
+  const now=new Date().toISOString()
+  const{error}=await sb.from('trabajadores').update({informado_rgpd:true,informado_rgpd_fecha:now}).eq('id',editingWorkerId)
+  if(error){toast('Error',true);return}
+  const w=trabajadores.find(t=>t.id===editingWorkerId); w.informado_rgpd=true; w.informado_rgpd_fecha=now
+  renderRgpdModal(); renderWorkers(); toast('Marcado como informado')
+}
+
+document.getElementById('btn-mw-close').onclick=()=>document.getElementById('modal-worker').classList.remove('open')
+document.getElementById('btn-mw-delete').onclick=async()=>{
+  if(!confirm('¿Eliminar este trabajador? Sus fichajes y auditoría se conservan por ley aunque el trabajador se elimine de la lista activa. Esta acción solo debe usarse si fue un alta errónea.'))return
+  await sb.from('trabajadores').delete().eq('id',editingWorkerId)
+  trabajadores=trabajadores.filter(t=>t.id!==editingWorkerId)
+  horarios=horarios.filter(h=>h.trabajador_id!==editingWorkerId)
+  document.getElementById('modal-worker').classList.remove('open')
+  renderWorkers(); toast('Trabajador eliminado')
+}
+
+// AUDITORÍA GLOBAL
+function renderAuditGlobal(){
+  const el=document.getElementById('audit-global')
+  if(!auditoria.length){el.innerHTML='<div class="empty-msg">Sin correcciones registradas todavía</div>';return}
+  el.innerHTML=`<table class="data-table"><thead><tr><th>Fecha cambio</th><th>Trabajador</th><th>Acción</th><th>Admin</th><th>Motivo</th></tr></thead><tbody>
+    ${auditoria.map(a=>{
+      const w=trabajadores.find(t=>t.id===a.trabajador_id)
+      return`<tr><td>${new Date(a.fecha_hora).toLocaleString('es-ES')}</td><td>${w?w.nombre:'—'}</td><td>${a.accion}</td><td>${a.admin_usuario||'—'}</td><td style="font-style:italic">${a.motivo||''}</td></tr>`
+    }).join('')}
+  </tbody></table>`
+}
+
+// EXPORTACIÓN CSV
+function toCSV(rows, headers){
+  const esc=v=>`"${String(v??'').replace(/"/g,'""')}"`
+  return [headers.map(esc).join(';'), ...rows.map(r=>r.map(esc).join(';'))].join('\n')
+}
+function downloadCSV(content, filename){
+  const blob=new Blob(['\uFEFF'+content],{type:'text/csv;charset=utf-8;'})
+  const url=URL.createObjectURL(blob)
+  const a=document.createElement('a'); a.href=url; a.download=filename; a.click(); URL.revokeObjectURL(url)
+}
+document.getElementById('btn-export-all').onclick=()=>{
+  const headers=['Trabajador','PIN','Tipo','Fecha','Hora','Fuera de horario','Anulado','Motivo anulación','Origen']
+  const rows=fichajes.map(f=>{
+    const w=trabajadores.find(t=>t.id===f.trabajador_id)
+    const d=new Date(f.fecha_hora)
+    return[w?w.nombre:'—',w?w.pin:'',f.tipo,d.toLocaleDateString('es-ES'),d.toLocaleTimeString('es-ES'),f.fuera_de_horario?'Sí':'No',f.anulado?'Sí':'No',f.anulado_motivo||'',f.creado_por||'trabajador']
+  })
+  downloadCSV(toCSV(rows,headers), `fichajes_la_cabana_${new Date().toISOString().slice(0,10)}.csv`)
+  toast('CSV exportado')
+}
+document.getElementById('btn-export-worker').onclick=()=>{
+  const w=trabajadores.find(t=>t.id===editingWorkerId)
+  const fs=fichajes.filter(f=>f.trabajador_id===editingWorkerId)
+  const headers=['Tipo','Fecha','Hora','Fuera de horario','Anulado','Motivo anulación','Origen']
+  const rows=fs.map(f=>{const d=new Date(f.fecha_hora);return[f.tipo,d.toLocaleDateString('es-ES'),d.toLocaleTimeString('es-ES'),f.fuera_de_horario?'Sí':'No',f.anulado?'Sí':'No',f.anulado_motivo||'',f.creado_por||'trabajador']})
+  downloadCSV(toCSV(rows,headers), `fichajes_${w.nombre.replace(/\s+/g,'_')}_${new Date().toISOString().slice(0,10)}.csv`)
+  toast('CSV exportado')
+}
+</script>
+</body>
+</html>
