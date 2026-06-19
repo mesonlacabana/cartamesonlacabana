@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fichaje - La Cabaña</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#f5f0e8;color:#2a1f0e;font-family:'EB Garamond',Georgia,serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.wrap{width:100%;max-width:420px}
+.header{text-align:center;margin-bottom:2rem}
+.brand{font-family:'Cinzel',serif;font-size:1.6rem;color:#4a2c0a;letter-spacing:0.08em}
+.brand-sub{font-family:'Cinzel',serif;font-size:0.7rem;color:#8b6914;letter-spacing:0.25em;text-transform:uppercase;margin-top:0.2rem}
+/* PIN SCREEN */
+.pin-card{background:#fff;border:1px solid #c9a84c;border-radius:14px;padding:2.2rem 1.8rem;box-shadow:0 4px 24px #8b691422}
+.pin-label{font-family:'Cinzel',serif;font-size:0.78rem;color:#8b6914;letter-spacing:0.15em;text-transform:uppercase;text-align:center;margin-bottom:1.2rem}
+.pin-display{display:flex;justify-content:center;gap:0.6rem;margin-bottom:1.5rem}
+.pin-dot{width:18px;height:18px;border-radius:50%;border:2px solid #c9a84c88;background:transparent;transition:all 0.15s}
+.pin-dot.filled{background:#4a2c0a;border-color:#4a2c0a}
+.pin-pad{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.7rem}
+.pin-btn{aspect-ratio:1;border-radius:50%;border:1px solid #c9a84c66;background:#faf7f0;font-family:'Cinzel',serif;font-size:1.3rem;color:#4a2c0a;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.12s}
+.pin-btn:hover{background:#f0e8d0}
+.pin-btn:active{transform:scale(0.94);background:#e8dcc0}
+.pin-btn.action{background:transparent;border:none;font-size:1.1rem;color:#8b6914}
+.pin-err{color:#a32d2d;text-align:center;font-style:italic;font-size:0.88rem;margin-top:1rem;min-height:1.2rem}
+/* WORKER SCREEN */
+.worker-card{background:#fff;border:1px solid #c9a84c;border-radius:14px;padding:2.5rem 2rem;text-align:center;box-shadow:0 4px 24px #8b691422}
+.worker-greeting{font-family:'Cinzel',serif;font-size:0.75rem;color:#8b6914;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.4rem}
+.worker-name{font-family:'Cinzel',serif;font-size:1.5rem;color:#4a2c0a;margin-bottom:0.3rem}
+.worker-clock{font-family:'Cinzel',serif;font-size:0.85rem;color:#8b6914;margin-bottom:2rem;letter-spacing:0.05em}
+.worker-status{font-size:0.92rem;font-style:italic;color:#6b4f2a;margin-bottom:1.8rem;min-height:1.4rem}
+.btns-row{display:flex;flex-direction:column;gap:0.8rem}
+.btn-fichaje{padding:1rem;border:none;border-radius:10px;font-family:'Cinzel',serif;font-size:0.95rem;letter-spacing:0.12em;cursor:pointer;text-transform:uppercase;transition:all 0.15s}
+.btn-entrada{background:#0f6e56;color:#fff}
+.btn-entrada:hover{background:#0c5a45}
+.btn-entrada:disabled{background:#ccc;cursor:not-allowed}
+.btn-salida{background:#a3621f;color:#fff}
+.btn-salida:hover{background:#8a5119}
+.btn-salida:disabled{background:#ccc;cursor:not-allowed}
+.btn-volver{margin-top:1.5rem;background:none;border:none;color:#8b6914;font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.1em;cursor:pointer;text-transform:uppercase}
+.btn-volver:hover{color:#4a2c0a}
+.btn-historial{margin-top:0.8rem;background:none;border:1px solid #c9a84c88;color:#8b6914;font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:0.08em;cursor:pointer;text-transform:uppercase;padding:0.5rem 1rem;border-radius:8px;width:100%}
+.btn-historial:hover{background:#f0e8d022}
+.confirm-msg{background:#dff0e3;color:#0f6e56;border-radius:8px;padding:0.9rem;font-family:'Cinzel',serif;font-size:0.85rem;letter-spacing:0.05em;margin-bottom:1.2rem}
+.warn-msg{background:#fcebeb;color:#a32d2d;border-radius:8px;padding:0.7rem;font-style:italic;font-size:0.85rem;margin-bottom:1.2rem}
+/* HISTORIAL SCREEN */
+.hist-card{background:#fff;border:1px solid #c9a84c;border-radius:14px;padding:1.6rem;box-shadow:0 4px 24px #8b691422;max-height:80vh;overflow-y:auto}
+.hist-title{font-family:'Cinzel',serif;font-size:0.85rem;color:#8b6914;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.2rem;text-align:center}
+.hist-name{font-family:'Cinzel',serif;font-size:1.15rem;color:#4a2c0a;text-align:center;margin-bottom:1rem}
+.hist-table{width:100%;border-collapse:collapse;font-size:0.82rem}
+.hist-table th{font-family:'Cinzel',serif;font-size:0.58rem;color:#8b6914;letter-spacing:0.1em;text-transform:uppercase;padding:0.35rem 0.4rem;border-bottom:1px solid #c9a84c;text-align:left}
+.hist-table td{padding:0.32rem 0.4rem;border-bottom:1px dotted #c9a84c33}
+.hist-tag-e{color:#0f6e56;font-family:'Cinzel',serif;font-size:0.62rem;text-transform:uppercase}
+.hist-tag-s{color:#a3621f;font-family:'Cinzel',serif;font-size:0.62rem;text-transform:uppercase}
+.hist-tag-fuera{color:#a32d2d;font-size:0.65rem;background:#fcebeb;padding:0.06rem 0.3rem;border-radius:4px;font-family:'Cinzel',serif}
+.hist-tag-anulado{color:#6b4f2a;font-size:0.65rem;background:#e8e0d0;padding:0.06rem 0.3rem;border-radius:4px;font-family:'Cinzel',serif;text-decoration:line-through}
+.hist-empty{font-style:italic;color:#aaa;text-align:center;padding:1.5rem}
+.hist-info{font-size:0.78rem;color:#6b4f2a;font-style:italic;text-align:center;margin-top:1rem;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="brand">La Cabaña</div>
+    <div class="brand-sub">Control de Fichajes</div>
+  </div>
+
+  <!-- PIN SCREEN -->
+  <div id="pin-screen">
+    <div class="pin-card">
+      <div class="pin-label">Introduce tu PIN</div>
+      <div class="pin-display" id="pin-display"></div>
+      <div class="pin-pad" id="pin-pad"></div>
+      <div class="pin-err" id="pin-err"></div>
+    </div>
+  </div>
+
+  <!-- WORKER SCREEN -->
+  <div id="worker-screen" style="display:none">
+    <div class="worker-card">
+      <div class="worker-greeting">Bienvenido/a</div>
+      <div class="worker-name" id="w-name"></div>
+      <div class="worker-clock" id="w-clock"></div>
+      <div id="w-confirm"></div>
+      <div class="worker-status" id="w-status"></div>
+      <div class="btns-row">
+        <button class="btn-fichaje btn-entrada" id="btn-entrada">Fichar Entrada</button>
+        <button class="btn-fichaje btn-salida" id="btn-salida">Fichar Salida</button>
+      </div>
+      <button class="btn-historial" id="btn-ver-historial">📋 Ver mi historial de fichajes</button>
+      <button class="btn-volver" id="btn-volver">← Volver</button>
+    </div>
+  </div>
+
+  <!-- HISTORIAL SCREEN -->
+  <div id="historial-screen" style="display:none">
+    <div class="hist-card">
+      <div class="hist-title">Mi historial</div>
+      <div class="hist-name" id="h-name"></div>
+      <div id="h-table-wrap"></div>
+      <div class="hist-info">Estos son tus registros de jornada conforme al deber de información del RGPD. Se conservan un mínimo de 4 años y solo tú y la administración del restaurante tienen acceso a ellos.</div>
+      <button class="btn-volver" id="btn-historial-volver" style="display:block;margin:1rem auto 0">← Volver a fichar</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+const sb = createClient('https://ycevaztpxjfnbwjmojhx.supabase.co','sb_publishable_qVRqDvEojdSXXFogpx6iHA_oDn1L0R1')
+
+let pin=''
+let currentWorker=null
+const PIN_LEN=4
+
+// CLOCK
+function updateClock(){
+  const el=document.getElementById('w-clock')
+  if(el) el.textContent=new Date().toLocaleString('es-ES',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'})
+}
+setInterval(updateClock,1000)
+
+// PIN PAD
+function renderPinDisplay(){
+  document.getElementById('pin-display').innerHTML=Array.from({length:PIN_LEN}).map((_,i)=>`<div class="pin-dot${i<pin.length?' filled':''}"></div>`).join('')
+}
+function renderPinPad(){
+  const keys=['1','2','3','4','5','6','7','8','9','','0','⌫']
+  document.getElementById('pin-pad').innerHTML=keys.map(k=>{
+    if(k==='')return'<div></div>'
+    const isAction=k==='⌫'
+    return`<button class="pin-btn${isAction?' action':''}" data-key="${k}">${k}</button>`
+  }).join('')
+  document.querySelectorAll('[data-key]').forEach(b=>b.onclick=()=>handleKey(b.dataset.key))
+}
+function handleKey(k){
+  document.getElementById('pin-err').textContent=''
+  if(k==='⌫'){pin=pin.slice(0,-1);renderPinDisplay();return}
+  if(pin.length>=PIN_LEN)return
+  pin+=k; renderPinDisplay()
+  if(pin.length===PIN_LEN) checkPin()
+}
+async function checkPin(){
+  const{data,error}=await sb.from('trabajadores').select('*').eq('pin',pin).eq('activo',true).maybeSingle()
+  if(error||!data){
+    document.getElementById('pin-err').textContent='PIN incorrecto'
+    setTimeout(()=>{pin='';renderPinDisplay()},700)
+    return
+  }
+  currentWorker=data
+  pin=''; renderPinDisplay()
+  showWorkerScreen()
+}
+
+// WORKER SCREEN
+async function showWorkerScreen(){
+  document.getElementById('pin-screen').style.display='none'
+  document.getElementById('worker-screen').style.display='block'
+  document.getElementById('w-name').textContent=currentWorker.nombre
+  document.getElementById('w-confirm').innerHTML=''
+  updateClock()
+  await refreshLastFichaje()
+}
+let lastTipo=null
+async function refreshLastFichaje(){
+  const{data}=await sb.from('fichajes').select('*').eq('trabajador_id',currentWorker.id).order('fecha_hora',{ascending:false}).limit(1)
+  lastTipo = data&&data.length ? data[0].tipo : null
+  const statusEl=document.getElementById('w-status')
+  const btnE=document.getElementById('btn-entrada'), btnS=document.getElementById('btn-salida')
+  if(lastTipo==='entrada'){
+    statusEl.textContent='Estás fichado como presente'
+    btnE.disabled=true; btnS.disabled=false
+  } else {
+    statusEl.textContent=lastTipo==='salida' ? 'Última acción: salida' : 'Sin fichajes hoy'
+    btnE.disabled=false; btnS.disabled=true
+  }
+}
+
+// VERIFICAR HORARIO
+function diaSemanaISO(d){const x=d.getDay();return x===0?7:x}
+async function esFueraDeHorario(trabajadorId, fecha){
+  const{data}=await sb.from('trabajador_horarios').select('*').eq('trabajador_id',trabajadorId).eq('dia_semana',diaSemanaISO(fecha))
+  if(!data||!data.length) return true // sin horario definido ese día = fuera de horario
+  const hhmm = fecha.toTimeString().slice(0,8)
+  return !data.some(h=>hhmm>=h.hora_inicio && hhmm<=h.hora_fin)
+}
+
+async function fichar(tipo){
+  const now=new Date()
+  const fuera = await esFueraDeHorario(currentWorker.id, now)
+  const{error}=await sb.from('fichajes').insert({trabajador_id:currentWorker.id,tipo,fecha_hora:now.toISOString(),fuera_de_horario:fuera})
+  if(error){document.getElementById('w-status').textContent='Error al fichar';return}
+  const msg = tipo==='entrada' ? 'Entrada registrada correctamente' : 'Salida registrada correctamente'
+  document.getElementById('w-confirm').innerHTML = `<div class="confirm-msg">✓ ${msg}${fuera?'<br><span style="font-weight:400;font-style:italic">⚠ Fuera de tu horario habitual</span>':''}</div>`
+  await refreshLastFichaje()
+  setTimeout(()=>{
+    document.getElementById('w-confirm').innerHTML=''
+    backToPin()
+  },2500)
+}
+document.getElementById('btn-entrada').onclick=()=>fichar('entrada')
+document.getElementById('btn-salida').onclick=()=>fichar('salida')
+
+// HISTORIAL DEL PROPIO TRABAJADOR (derecho de acceso RGPD)
+document.getElementById('btn-ver-historial').onclick=async()=>{
+  document.getElementById('worker-screen').style.display='none'
+  document.getElementById('historial-screen').style.display='block'
+  document.getElementById('h-name').textContent=currentWorker.nombre
+  const{data,error}=await sb.from('fichajes').select('*').eq('trabajador_id',currentWorker.id).order('fecha_hora',{ascending:false}).limit(200)
+  const wrap=document.getElementById('h-table-wrap')
+  if(error||!data||!data.length){wrap.innerHTML='<div class="hist-empty">Aún no tienes fichajes registrados</div>';return}
+  wrap.innerHTML=`<table class="hist-table"><thead><tr><th>Fecha</th><th>Hora</th><th>Tipo</th><th>Estado</th></tr></thead><tbody>
+    ${data.map(f=>{
+      const d=new Date(f.fecha_hora)
+      return`<tr>
+        <td>${d.toLocaleDateString('es-ES')}</td>
+        <td>${d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}</td>
+        <td><span class="${f.tipo==='entrada'?'hist-tag-e':'hist-tag-s'}">${f.tipo}</span></td>
+        <td>${f.anulado?'<span class="hist-tag-anulado">Anulado</span>':(f.fuera_de_horario?'<span class="hist-tag-fuera">Fuera horario</span>':'')}</td>
+      </tr>`
+    }).join('')}
+  </tbody></table>`
+}
+document.getElementById('btn-historial-volver').onclick=()=>{
+  document.getElementById('historial-screen').style.display='none'
+  document.getElementById('worker-screen').style.display='block'
+}
+
+function backToPin(){
+  currentWorker=null; pin=''; renderPinDisplay()
+  document.getElementById('worker-screen').style.display='none'
+  document.getElementById('pin-screen').style.display='block'
+}
+document.getElementById('btn-volver').onclick=backToPin
+
+renderPinDisplay(); renderPinPad()
+</script>
+</body>
+</html>
